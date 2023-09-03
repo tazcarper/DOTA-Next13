@@ -8,11 +8,7 @@ export function options(req: NextApiRequest | null): NextAuthOptions {
       // @ts-expect-error
       SteamProvider(req, {
         clientSecret: process.env.STEAM_SECRET as string,
-        callbackUrl: `${
-          process.env.NODE_ENV === "production"
-            ? process.env.PROD
-            : process.env.LOCALHOST
-        }/api/auth/callback`,
+        callbackUrl: `${process.env.NEXTAUTH_URL}/api/auth/callback`,
       }),
     ],
     callbacks: {

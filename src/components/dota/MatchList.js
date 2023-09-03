@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, Suspense } from "react";
-
+import { useState, Suspense, useContext, useEffect } from "react";
+import { ClientDotaProfileDataProviderContext } from "@/providers/DotaClientProvider";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import PlayerQuery from "@/src/queries/PlayerQuery";
 import InputSteamId from "@/src/components/dota/form/InputSteamId";
@@ -10,23 +10,18 @@ import HeroPortrait from "@/src/components/shared/HeroPortrait";
 export default function MatchList({ initialSteamId }) {
   const [matchList, setMatchList] = useState([]);
   const [steamId, setSteamId] = useState(initialSteamId);
-  // 219981899
+  const { state, dispatch } = useContext(ClientDotaProfileDataProviderContext);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (e.target[0].value.length <= 0 || isNaN(e.target[0].value)) return null;
     setSteamId(e.target[0].value);
   };
 
-  console.log("initialSteamId", initialSteamId);
-  console.log("steamId", steamId);
-
   const { data, error } = useSuspenseQuery(PlayerQuery, {
-    skip: !steamId,
     variables: { steamAccountId: parseInt(steamId) },
   });
 
-  console.log(error);
   if (!data?.player?.steamAccount?.name || error) {
     return (
       <div>
@@ -35,6 +30,13 @@ export default function MatchList({ initialSteamId }) {
       </div>
     );
   }
+
+  useEffect(() => {
+    console.log(data);
+    dispatch({ type: "UPDATE_USER", payload: data });
+  }, [data]);
+
+  console.log(state);
 
   return (
     <div>
