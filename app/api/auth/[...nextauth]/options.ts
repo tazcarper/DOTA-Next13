@@ -5,9 +5,14 @@ import type { NextApiRequest } from "next";
 export function options(req: NextApiRequest | null): NextAuthOptions {
   return {
     providers: [
+      // @ts-expect-error
       SteamProvider(req, {
         clientSecret: process.env.STEAM_SECRET as string,
-        callbackUrl: "http://localhost:3000/api/auth/callback",
+        callbackUrl: `${
+          process.env.NODE_ENV === "production"
+            ? process.env.PROD
+            : process.env.LOCALHOST
+        }/api/auth/callback`,
       }),
     ],
     callbacks: {

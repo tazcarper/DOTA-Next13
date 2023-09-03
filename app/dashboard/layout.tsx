@@ -31,6 +31,7 @@ export default async function RootLayout({
   return (
     <div className="dashboard">
       <DotaProfileDataProvider initialState={steamProfileData}>
+        <a href="/api/auth/signout">Sign out</a>
         {children}
       </DotaProfileDataProvider>
     </div>
