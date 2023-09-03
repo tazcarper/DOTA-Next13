@@ -22,6 +22,13 @@ export default function MatchList({ initialSteamId }) {
     variables: { steamAccountId: parseInt(steamId) },
   });
 
+  useEffect(() => {
+    console.log(data);
+    if (data?.player?.steamAccount?.name) {
+      dispatch({ type: "UPDATE_USER", payload: data });
+    }
+  }, [data]);
+
   if (!data?.player?.steamAccount?.name || error) {
     return (
       <div>
@@ -30,13 +37,6 @@ export default function MatchList({ initialSteamId }) {
       </div>
     );
   }
-
-  useEffect(() => {
-    console.log(data);
-    dispatch({ type: "UPDATE_USER", payload: data });
-  }, [data]);
-
-  console.log(state);
 
   return (
     <div>
