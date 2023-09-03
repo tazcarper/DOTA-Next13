@@ -5,6 +5,7 @@ const PlayerQuery = gql`
     player(steamAccountId: $steamAccountId) {
       behaviorScore
       steamAccount {
+        avatar
         name
       }
       matches(request: { take: 5 }) {
@@ -12,11 +13,11 @@ const PlayerQuery = gql`
         players(steamAccountId: $steamAccountId) {
           matchId
           steamAccountId
+
           role
           isVictory
           hero {
             id
-            displayName
             shortName
           }
           kills

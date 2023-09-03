@@ -1,7 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import ServerProviderWrapper from "@/src/providers/ServerProviderWrapper";
 import { ApolloClientWrapper } from "@/providers/ApolloClientProvider";
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,12 +15,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <ServerProviderWrapper>
-        <ApolloClientWrapper>
-          <body>{children}</body>
-        </ApolloClientWrapper>
-      </ServerProviderWrapper>
+    <html lang="en" data-theme="dotaTheme">
+      <ApolloClientWrapper>
+        <body>{children}</body>
+      </ApolloClientWrapper>
     </html>
   );
 }

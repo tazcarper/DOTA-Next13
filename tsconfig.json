@@ -20,10 +20,13 @@
     ],
     "paths": {
       "@/*": ["./*"],
+      "@/api/*": ["app/api*"],
+      "@/auth/*": ["app/api/auth/[...nextauth]/*"],
       "@/providers/*": ["src/providers/*"],
       "@/store/*": ["src/store/*"],
       "@/components/*": ["src/components/*"],
       "@/lib/*": ["src/lib/*"],
+      "@/utils/*": ["src/utils/*"],
       "@/queries/*": ["src/queries/*"]
     },
     "baseUrl": "."
