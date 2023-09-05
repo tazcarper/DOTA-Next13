@@ -17,8 +17,8 @@ export default function MatchRender({ match }) {
     parseInt(startDateTime) * 1000
   ).toLocaleDateString();
   const victoryStyle = isVictory
-    ? "border-success border"
-    : "border-error border ";
+    ? "border-success border-b-4"
+    : "border-error border-b-4 ";
 
   return (
     <div
