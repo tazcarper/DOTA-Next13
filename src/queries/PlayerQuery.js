@@ -12,6 +12,8 @@ const PlayerQuery = gql`
       guildMember {
         guildId
         guild {
+          name
+          memberCount
           members {
             steamAccountId
           }

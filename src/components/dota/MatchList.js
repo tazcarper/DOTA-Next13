@@ -5,7 +5,6 @@ import { ClientDotaProfileDataProviderContext } from "@/providers/DotaClientProv
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import PlayerQuery from "@/src/queries/PlayerQuery";
 import InputSteamId from "@/src/components/dota/form/InputSteamId";
-import HeroPortrait from "@/src/components/shared/HeroPortrait";
 import MatchRender from "@/components/dota/MatchRender";
 
 export default function MatchList({ initialSteamId }) {

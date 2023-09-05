@@ -31,10 +31,15 @@ export default async function RootLayout({
   const userId = toUserID(BigInt(steamid));
 
   const client = getClient();
-  const { data } = await client.query({
+  const { data, error } = await client.query({
     query: PlayerQuery,
     variables: { steamAccountId: parseInt(userId) },
   });
+
+  if (error) {
+    console.log(data);
+    return <div>error</div>;
+  }
 
   return (
     <div className="dashboard">

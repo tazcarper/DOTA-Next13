@@ -4,7 +4,6 @@ import { getServerSession } from "next-auth/next";
 export const revalidate = 5;
 
 export default async function Dota(props) {
-  console.log(props);
   const session = await getServerSession(options(null));
 
   if (!session) {
