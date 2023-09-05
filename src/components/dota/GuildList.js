@@ -17,9 +17,8 @@ export default function GuildList({ initialGuildList, initialSteamId }) {
     <div>
       <h2>guild list</h2>
       {guildList.map((guildMember) => {
-        const {
-          steamAccount: { name },
-        } = guildMember;
+        console.log(guildMember);
+        const { name } = guildMember;
         return (
           <div key={name}>
             <h3>{guildMember.name}</h3>
