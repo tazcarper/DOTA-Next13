@@ -53,7 +53,7 @@ export default function MatchList({ initialSteamId }) {
         <div className="flex flex-col md:flex-row text-center align-middle w-full">
           {steamId &&
             data.player.matches.map((match) => {
-              const { matchId } = match;
+              const { matchId, startDateTime } = match;
               const { shortName, displayName } = match.players[0].hero;
               const { isVictory, kills, deaths, assists } = match.players[0];
 
@@ -64,6 +64,7 @@ export default function MatchList({ initialSteamId }) {
                 deaths,
                 assists,
                 displayName,
+                startDateTime,
               };
               return <MatchRender match={matchProps} key={matchId} />;
             })}

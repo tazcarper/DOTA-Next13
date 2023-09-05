@@ -6,10 +6,11 @@ const GuildQuery = gql`
       steamAccount {
         name
         id
+        avatar
       }
       matches(request: { take: 5 }) {
         id
-
+        startDateTime
         players {
           kills
           deaths

@@ -19,6 +19,7 @@ const PlayerQuery = gql`
       }
       matches(request: { take: 5 }) {
         id
+        startDateTime
         players(steamAccountId: $steamAccountId) {
           matchId
           steamAccountId

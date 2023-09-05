@@ -5,9 +5,14 @@ export default function GuildList({ initialGuildList, initialSteamId }) {
     const playerInfo = { ...player.steamAccount };
     const playerId = player.steamAccount.id;
     const matches = player.matches.map((match) => {
-      return match.players.filter(
+      const { id, startDateTime } = match;
+      const playedHero = match.players.filter(
         (player) => player.steamAccount.id === playerId
       );
+
+      playedHero.id = id;
+      playedHero.startDateTime = startDateTime;
+      return { ...playedHero[0], id, startDateTime };
     });
     playerInfo.matches = matches;
     return playerInfo;
@@ -15,17 +20,20 @@ export default function GuildList({ initialGuildList, initialSteamId }) {
 
   return (
     <div>
-      <h2>guild list</h2>
+      <h2 className="my-5 text-4xl">Guild Members</h2>
       {guildList.map((guildMember) => {
-        console.log(guildMember);
-        const { name } = guildMember;
+        const { name, avatar } = guildMember;
         return (
           <div key={name}>
-            <h3>{guildMember.name}</h3>
+            <div className="flex flex-row w-full my-5">
+              <img className="rounded-full w-10 mr-3" src={avatar} />
+              <h3 className="text-gray-400 text-2xl">{guildMember.name}</h3>
+            </div>
             <div className="flex flex-col md:flex-row text-center align-middle w-1/2 items-baseline">
               {guildMember.matches.map((match) => {
-                const currentMatch = match[0];
-                const { matchId } = currentMatch;
+                const currentMatch = match;
+
+                const { startDateTime, id } = match;
                 const { isVictory, kills, deaths, assists } = currentMatch;
                 const matchProps = {
                   shortName: currentMatch.hero.shortName,
@@ -34,8 +42,10 @@ export default function GuildList({ initialGuildList, initialSteamId }) {
                   kills,
                   deaths,
                   assists,
+                  startDateTime,
+                  id,
                 };
-                return <MatchRender match={matchProps} key={matchId} />;
+                return <MatchRender match={matchProps} key={id} />;
               })}
             </div>
           </div>
