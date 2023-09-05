@@ -1,10 +1,12 @@
 import MatchList from "@/components/dota/MatchList";
+import GuildList from "@/components/dota/GuildList";
 import { options } from "@/auth/options";
 import { getServerSession } from "next-auth/next";
 import { toUserID } from "@/utils/steamConvert";
 export const revalidate = 5;
 import { getClient } from "@/lib/apolloClient";
 import PlayerQuery from "@/queries/PlayerQuery";
+import GuildQuery from "@/queries/GuildQuery";
 export default async function Dota(props) {
   const session = await getServerSession(options(null));
 
@@ -28,11 +30,18 @@ export default async function Dota(props) {
     variables: { steamAccountId: parseInt(userId) },
   });
 
-  console.log(data);
+  const initialGuildList = data?.player?.guildMember?.guild?.members;
+
+  const membersList = initialGuildList.map((member) => member.steamAccountId);
+  const { data: guildData, error } = await client.query({
+    query: GuildQuery,
+    variables: { steamAccountIds: membersList.slice(0, 5) },
+  });
 
   return (
     <div>
       <MatchList initialSteamId={userId} />
+      <GuildList initialGuildList={guildData} initialSteamId={userId} />
     </div>
   );
 }

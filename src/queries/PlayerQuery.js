@@ -27,6 +27,7 @@ const PlayerQuery = gql`
           hero {
             id
             shortName
+            displayName
           }
           kills
           deaths
