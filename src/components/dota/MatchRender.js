@@ -1,5 +1,5 @@
 import HeroPortrait from "@/src/components/shared/HeroPortrait";
-
+import { Suspense } from "react";
 export default function MatchRender({ match }) {
   const {
     isVictory,
