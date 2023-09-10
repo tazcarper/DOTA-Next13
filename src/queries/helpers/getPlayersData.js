@@ -1,7 +1,7 @@
 import GuildQuery from "@/queries/GuildQuery";
 
 export default async function getPlayerData({ membersList, client }) {
-  if (membersList <= 0) return [];
+  if (!membersList || membersList <= 0) return [];
   const promiseBatch = [];
   const batchSize = 5;
   for (let i = 0; i < membersList.length; i += batchSize) {

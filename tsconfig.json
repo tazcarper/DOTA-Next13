@@ -27,7 +27,8 @@
       "@/components/*": ["src/components/*"],
       "@/lib/*": ["src/lib/*"],
       "@/utils/*": ["src/utils/*"],
-      "@/queries/*": ["src/queries/*"]
+      "@/queries/*": ["src/queries/*"],
+      "@/data/*": ["src/data/*"]
     },
     "baseUrl": "."
   },
