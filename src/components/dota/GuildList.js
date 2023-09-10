@@ -1,23 +1,18 @@
+import { Suspense } from "react";
 import MatchRender from "@/components/dota/MatchRender";
 import GuildName from "@/components/dota/GuildName";
-
-export default function GuildList({ initialGuildList, initialSteamId }) {
-  const guildList = initialGuildList.map((player) => {
-    const playerInfo = { ...player.steamAccount };
-    const playerId = player.steamAccount.id;
-    const matches = player.matches.map((match) => {
-      const { id, startDateTime } = match;
-      const playedHero = match.players.filter(
-        (player) => player.steamAccount.id === playerId
-      );
-
-      playedHero.id = id;
-      playedHero.startDateTime = startDateTime;
-      return { ...playedHero[0], id, startDateTime };
-    });
-    playerInfo.matches = matches;
-    return playerInfo;
+import getPlayersData from "@/queries/helpers/getPlayersData";
+import Loading from "@/components/shared/Loading";
+import { getClient } from "@/lib/apolloClient";
+import buildGuildList from "@/utils/buildGuildList";
+export default async function GuildList({ initialGuildList = [] }) {
+  const client = getClient();
+  const allPlayerData = await getPlayersData({
+    membersList: initialGuildList,
+    client,
   });
+
+  const guildList = buildGuildList(allPlayerData);
 
   return (
     <div className="flex flex-col text-center">

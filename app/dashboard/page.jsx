@@ -5,36 +5,8 @@ import { getServerSession } from "next-auth/next";
 import { toUserID } from "@/utils/steamConvert";
 import { getClient } from "@/lib/apolloClient";
 import PlayerQuery from "@/queries/PlayerQuery";
-import GuildQuery from "@/queries/GuildQuery";
-
-async function getPlayerData({ membersList, client }) {
-  const promiseBatch = [];
-  const batchSize = 5;
-  for (let i = 0; i < membersList.length; i += batchSize) {
-    const batch = membersList.slice(i, i + batchSize);
-
-    const guildPromise = client.query({
-      query: GuildQuery,
-      variables: { steamAccountIds: batch },
-    });
-
-    promiseBatch.push(guildPromise);
-  }
-
-  return Promise.allSettled(promiseBatch).then((groups) => {
-    const groupings = groups.map((group) => {
-      if (group.status === "fulfilled") {
-        return group?.value?.data?.players;
-      }
-      return [];
-    });
-    return groupings
-      .flat()
-      .filter((player) => player.matches.length > 0)
-      .sort((a, b) => a.steamAccount.name.localeCompare(b.steamAccount.name));
-  });
-}
-
+import { Suspense } from "react";
+import Loading from "@/components/shared/Loading";
 export default async function Dota(props) {
   const session = await getServerSession(options(null));
 
@@ -57,7 +29,6 @@ export default async function Dota(props) {
     query: PlayerQuery,
     variables: { steamAccountId: parseInt(userId) },
   });
-  console.log(error);
 
   if (error) {
     return <div>error</div>;
@@ -68,11 +39,14 @@ export default async function Dota(props) {
     .map((member) => member.steamAccountId)
     .sort();
 
-  const allPlayerData = await getPlayerData({ membersList, client });
   return (
     <div>
-      <MatchList initialSteamId={userId} />
-      <GuildList initialGuildList={allPlayerData} initialSteamId={userId} />
+      <Suspense fallback={<Loading />}>
+        <MatchList initialSteamId={userId} />
+      </Suspense>
+      <Suspense fallback={<Loading />}>
+        <GuildList initialGuildList={membersList} initialSteamId={userId} />
+      </Suspense>
     </div>
   );
 }
