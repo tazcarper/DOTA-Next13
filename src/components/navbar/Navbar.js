@@ -1,7 +1,7 @@
 import UserInfo from "./UserInfo";
 import Link from "next/link";
 import { Suspense } from "react";
-export default function Navbar({ children, initialState }) {
+export default function Navbar({ children }) {
   return (
     <div className="navbar bg-primary">
       <div className="navbar-start">
@@ -75,7 +75,7 @@ export default function Navbar({ children, initialState }) {
       </div>
       <div className="navbar-end mr-0">
         <Suspense fallback={<div>Loading</div>}>
-          <UserInfo initialState={initialState} />
+          <UserInfo />
         </Suspense>
       </div>
     </div>

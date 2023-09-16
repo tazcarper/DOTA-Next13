@@ -3,6 +3,5 @@ export default async function insertUserInformation(user, supabaseClient) {
     .from("users")
     .insert(user)
     .select();
-  console.log(data, error);
   return { data, error };
 }

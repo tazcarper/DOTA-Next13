@@ -4,7 +4,7 @@ import { options } from "@/auth/options";
 import { getServerSession } from "next-auth/next";
 import { toUserID } from "@/utils/steamConvert";
 import { getClient } from "@/lib/apolloClient";
-import getPlayerData from "@/queries/helpers/getPlayerData";
+import getPlayerData from "@/queries/recipes/getPlayerData";
 import { Suspense } from "react";
 import initiateUser from "@/data/supabase/helpers/initiateUser";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -14,7 +14,7 @@ import Loading from "@/components/shared/Loading";
 export default async function Dota(props) {
   const session = await getServerSession(options(null));
   if (!session) {
-    // Can redirect or do whatever here
+    return <div>error</div>;
   }
 
   const {
@@ -38,15 +38,11 @@ export default async function Dota(props) {
     userId,
   };
 
-  console.log(steamBaseData);
-
   // Check if we have DB information
   const supabase_user_data = await initiateUser({
     steamBaseData,
     supabaseClient: supabase,
   });
-
-  console.log(supabase_user_data);
 
   const { data, error } = await getPlayerData({ client, userId });
 

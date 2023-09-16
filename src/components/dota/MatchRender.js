@@ -11,6 +11,7 @@ export default function MatchRender({ match }) {
     shortName,
     displayName,
     startDateTime,
+    isActive = true,
   } = match;
 
   const convertedDate = new Date(
@@ -19,12 +20,14 @@ export default function MatchRender({ match }) {
   const victoryStyle = isVictory
     ? "border-success border-b-4"
     : "border-error border-b-4 ";
+  const inactiveStyle = !isActive ? "grayscale" : "grayscale-0";
 
   return (
     <div
-      className={`${victoryStyle} w-full text-center mx-1 my-2 md:my-0 bg-neutral-700`}
+      className={`${victoryStyle} ${inactiveStyle} w-full text-center mx-1 my-2 md:my-0 bg-neutral-700`}
       key={match.id}
     >
+      {!isActive && <div className="absolute w-full bg-gray-500">Inactive</div>}
       <img src={HeroPortrait(shortName)} className="mx-auto w-full" />
       <div className="text-gray-500">
         <h2 className="text-1xl uppercase md:m-2 text-neutral-200 ">

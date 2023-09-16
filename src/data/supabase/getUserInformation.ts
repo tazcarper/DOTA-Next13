@@ -6,6 +6,5 @@ export default async function getUserInformation(
     .from("users")
     .select()
     .eq("user_id", userId);
-  console.log(data, error);
   return { data, error };
 }
