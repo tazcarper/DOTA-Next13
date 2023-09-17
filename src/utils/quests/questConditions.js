@@ -4,7 +4,8 @@
 export const diverseRolesAndHeroes = {
   condition: (match, prevMatches = []) =>
     prevMatches.every((prev) => prev.hero.id !== match.hero.id) &&
-    prevMatches.every((prev) => prev.role !== match.role),
+    prevMatches.every((prev) => prev.role !== match.role) &&
+    match.isVictory,
   streakLength: 5,
 };
 
@@ -33,12 +34,13 @@ export const objectiveSeeker = {
 };
 
 // Challenge 4: Greed is Good!
+// Win 3 games in a row with over 700 GPM and use unique heroes
 export const goldMiner = {
   condition: (match, prevMatches = []) => {
     const hasUsedThisHeroBefore = prevMatches.some(
       (prevMatch) => prevMatch.hero.id === match.hero.id
     );
-    return match.goldPerMinute > 700 && !hasUsedThisHeroBefore;
+    return match.goldPerMinute >= 700 && !hasUsedThisHeroBefore;
   },
   streakLength: 3,
 };
