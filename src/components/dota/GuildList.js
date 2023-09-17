@@ -30,7 +30,7 @@ export default async function GuildList() {
   const guildList = buildGuildList({ membersList });
 
   return (
-    <div className="flex flex-col text-center">
+    <div className="flex flex-col text-center mx-3">
       <GuildName guildInfo={guildInfo} />
       <h2 className="my-5 text-4xl">Guild Members</h2>
       {guildList.map((guildMember) => {
@@ -40,7 +40,7 @@ export default async function GuildList() {
             key={name}
             className=" mx-auto flex flex-row justify-center w-full"
           >
-            <div className="w-1/2">
+            <div className="">
               <div className="flex flex-row w-full my-5">
                 <img className="rounded-full w-10 mr-3" src={avatar} />
                 <h3 className="text-gray-400 text-2xl">{guildMember.name}</h3>

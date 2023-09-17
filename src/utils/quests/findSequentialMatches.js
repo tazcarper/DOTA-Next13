@@ -39,8 +39,12 @@ export function findSequentialMatches(matches, conditions) {
   for (let i = 0; i < matches.length; i++) {
     for (let conditionName in conditions) {
       const conditionObj = conditions[conditionName];
+      const prevMatches = matches.slice(
+        Math.max(0, i - conditionObj.streakLength + 1),
+        i
+      ); // extract previous matches for the streak
 
-      if (conditionObj.condition(matches[i])) {
+      if (conditionObj.condition(matches[i], prevMatches)) {
         counters[conditionName]++;
 
         if (counters[conditionName] === conditionObj.streakLength) {

@@ -37,3 +37,22 @@ export function toUserID(id) {
     return id; // We have no idea what this is, so just return it.
   }
 }
+
+export function getSteamBaseData(session) {
+  const {
+    user: {
+      name,
+      steam: { steamid, avatarfull },
+    },
+  } = session;
+
+  // Convert steamId to userID
+  const userId = toUserID(BigInt(steamid));
+
+  return {
+    steamid,
+    name,
+    avatarfull,
+    userId,
+  };
+}

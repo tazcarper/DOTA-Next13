@@ -1,42 +1,30 @@
 import MatchList from "@/components/dota/MatchList";
 import GuildList from "@/components/dota/GuildList";
+import QuestContainer from "@/components/userQuests/QuestContainer";
+import Loading from "@/components/shared/Loading";
+
 import { options } from "@/auth/options";
-import { getServerSession } from "next-auth/next";
-import { toUserID } from "@/utils/steamConvert";
-import { getClient } from "@/lib/apolloClient";
 import getPlayerData from "@/queries/recipes/getPlayerData";
-import { Suspense } from "react";
 import initiateUser from "@/data/supabase/helpers/initiateUser";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { getSteamBaseData } from "@/utils/steamConvert";
+import { getClient } from "@/lib/apolloClient";
+
+import { getServerSession } from "next-auth/next";
+import { Suspense } from "react";
 import { cookies } from "next/headers";
-// Components
-import Loading from "@/components/shared/Loading";
+
 export default async function Dota(props) {
   const session = await getServerSession(options(null));
   if (!session) {
     return <div>error</div>;
   }
 
-  const {
-    user: {
-      name,
-      steam: { steamid, avatarfull },
-    },
-  } = session;
-
   // Setup server clients
   const supabase = createServerComponentClient({ cookies });
   const client = getClient();
 
-  // Convert steamId to userID
-  const userId = toUserID(BigInt(steamid));
-
-  const steamBaseData = {
-    steamid,
-    name,
-    avatarfull,
-    userId,
-  };
+  const steamBaseData = getSteamBaseData(session);
 
   // Check if we have DB information
   const supabase_user_data = await initiateUser({
@@ -44,7 +32,10 @@ export default async function Dota(props) {
     supabaseClient: supabase,
   });
 
-  const { data, error } = await getPlayerData({ client, userId });
+  const { data, error } = await getPlayerData({
+    client,
+    userId: steamBaseData.userId,
+  });
 
   if (error) {
     return <div>error</div>;
@@ -56,13 +47,18 @@ export default async function Dota(props) {
     .sort();
 
   return (
-    <div>
+    <div className="px-3">
       <Suspense fallback={<Loading />}>
-        <MatchList initialSteamId={userId} />
+        <MatchList initialSteamId={steamBaseData.userId} />
       </Suspense>
-      <Suspense fallback={<Loading />}>
-        <GuildList initialGuildList={membersList} initialSteamId={userId} />
-      </Suspense>
+
+      <div className="flex">
+        <Suspense fallback={<Loading />}>
+          <GuildList />
+        </Suspense>
+
+        <QuestContainer />
+      </div>
     </div>
   );
 }

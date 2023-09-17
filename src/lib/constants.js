@@ -6,3 +6,9 @@ export const httpLinkValues = new HttpLink({
   },
   uri: "https://api.stratz.com/graphql",
 });
+
+export const QUEST_TYPES = {
+  1: "Daily",
+  2: "Weekly",
+  3: "Monthly",
+};

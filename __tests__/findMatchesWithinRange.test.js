@@ -1,4 +1,4 @@
-import { findMatchesWithinRange } from "../src/utils/achievements/findMatchesWithinRange";
+import { findMatchesWithinRange } from "../src/utils/quests/findMatchesWithinRange";
 describe("findMatchesWithinRange function", () => {
   const condition = (match) => match.role === "carry" && match.isVictory;
 

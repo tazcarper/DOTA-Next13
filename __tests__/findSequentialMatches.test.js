@@ -1,4 +1,4 @@
-import { findSequentialMatches } from "../src/utils/achievements/findSequentialMatches";
+import { findSequentialMatches } from "../src/utils/quests/findSequentialMatches";
 
 describe("findSequentialMatches  function", () => {
   const conditions = {
