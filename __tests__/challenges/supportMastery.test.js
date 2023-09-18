@@ -79,6 +79,7 @@ describe("Support Mastery Condition Test", () => {
     const matchesWithFailConditionArray = [
       matchesWithFailCondition,
       ...matchesWithSuccessCondition,
+      matchesWithFailConditionNoAssists,
     ];
 
     const result = findSequentialMatches(
@@ -108,7 +109,7 @@ describe("Support Mastery Condition Test", () => {
     const result = findSequentialMatches(
       [
         matchesWithFailCondition,
-        matchesWithFailCondition,
+        matchesWithFailConditionNoAssists,
         matchesWithFailCondition,
         matchesWithFailCondition,
         ...matchesWithSuccessCondition,
@@ -140,7 +141,7 @@ describe("Support Mastery Condition Test", () => {
     const matchesWithSuccessCondition = new Array(4).fill(matchThatPasses);
     const matchesWithFailConditionArray = [
       ...matchesWithSuccessCondition,
-      matchesWithFailCondition,
+      matchesWithFailConditionNoAssists,
       ...matchesWithSuccessCondition,
     ];
 
