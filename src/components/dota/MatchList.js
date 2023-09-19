@@ -51,7 +51,7 @@ export default function MatchList({ initialSteamId }) {
       <Suspense fallback={<div>Loading...</div>}>
         <div className="flex flex-col md:flex-row text-center align-middle w-full">
           {steamId &&
-            data.player.matches.map((match) => {
+            data?.player?.matches.map((match) => {
               const { matchId, startDateTime } = match;
               const { shortName, displayName } = match.players[0].hero;
               const { isVictory, kills, deaths, assists } = match.players[0];

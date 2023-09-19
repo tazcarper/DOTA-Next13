@@ -1,5 +1,6 @@
 import { findSequentialMatches } from "../../src/utils/quests/findSequentialMatches";
 import { supportMastery } from "../../src/utils/quests/questConditions";
+
 describe("Support Mastery Condition Test", () => {
   const conditions = {
     supportMastery,
@@ -19,20 +20,17 @@ describe("Support Mastery Condition Test", () => {
         { type: 1 },
         { type: 1 },
         { type: 1 }, // 10 type 1 wards
-        { type: 0 },
-        { type: 0 },
-        { type: 0 },
-        { type: 0 },
-        { type: 0 }, // 5 type 0 wards
       ],
+      wardDestruction: [{ isWard: true }, { isWard: true }],
     },
-    assists: 10,
+    assists: 11,
   };
 
   const matchesWithFailCondition = {
     role: "LIGHT_SUPPORT",
     stats: {
       wards: [{ type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 0 }],
+      wardDestruction: [],
     },
     assists: 5,
   };
@@ -40,6 +38,7 @@ describe("Support Mastery Condition Test", () => {
   const matchesWithFailConditionNoAssists = {
     role: "LIGHT_SUPPORT",
     stats: {
+      wardDestruction: [],
       wards: [
         { type: 1 },
         { type: 1 },

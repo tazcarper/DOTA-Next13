@@ -1,15 +1,15 @@
 import MatchList from "@/components/dota/MatchList";
 import GuildList from "@/components/dota/GuildList";
-import QuestContainer from "@/components/userQuests/QuestContainer";
+import ChallengeContainer from "@/components/userChallenges/ChallengeContainer";
 import Loading from "@/components/shared/Loading";
 
-import { options } from "@/auth/options";
 import getPlayerData from "@/queries/recipes/getPlayerData";
 import initiateUser from "@/data/supabase/helpers/initiateUser";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { getSteamBaseData } from "@/utils/steamConvert";
 import { getClient } from "@/lib/apolloClient";
 
+import { options } from "@/auth/options";
 import { getServerSession } from "next-auth/next";
 import { Suspense } from "react";
 import { cookies } from "next/headers";
@@ -57,7 +57,7 @@ export default async function Dota(props) {
           <GuildList />
         </Suspense>
 
-        <QuestContainer />
+        <ChallengeContainer />
       </div>
     </div>
   );

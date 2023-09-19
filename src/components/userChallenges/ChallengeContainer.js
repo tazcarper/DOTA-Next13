@@ -1,4 +1,4 @@
-import QuestCard from "@/components/userQuests/QuestCard";
+import QuestCard from "@/components/userChallenges/ChallengeCard";
 
 import { getSteamBaseData } from "@/utils/steamConvert";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -7,12 +7,27 @@ import { options } from "@/auth/options";
 import { getServerSession } from "next-auth/next";
 import { cookies } from "next/headers";
 
-export default async function QuestContainer() {
+export default async function ChallengeContainer() {
   const supabase = createServerComponentClient({ cookies });
   const session = await getServerSession(options(null));
   const steamBaseData = getSteamBaseData(session);
 
-  const { data: quests, error } = await supabase.from("quests").select();
+  const { data: userChallenges, error: userChallengesError } = await supabase
+    .from("user_challenges")
+    .select()
+    .eq("user_id", steamBaseData.userId);
+
+  console.log(userChallenges);
+
+  // Filter and determine if any active challenges. Do it for daily, weekly and monthly.
+  const findActiveChallenges = userChallenges?.filter((match) => match.active);
+
+  if (!userChallenges.length) {
+  }
+
+  const { data: challengeList, error } = await supabase
+    .from("challenges")
+    .select();
 
   if (error) {
     <div>Error fetching quests</div>;
@@ -21,20 +36,13 @@ export default async function QuestContainer() {
     <div className="mx-3 w-1/2">
       <h2 className="text-2xl mt-10 text-success">Quests</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full pt-5">
-        {quests?.map((quest) => (
+        {/* {challengeList?.map((quest) => (
           <QuestCard
             key={quest.id}
             quest={quest}
             onClick={() => console.log("clicked")}
           />
-        ))}
-        {quests?.map((quest) => (
-          <QuestCard
-            key={quest.id}
-            quest={quest}
-            onClick={() => console.log("clicked")}
-          />
-        ))}
+        ))} */}
       </div>
     </div>
   );

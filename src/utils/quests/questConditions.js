@@ -11,25 +11,25 @@ export const diverseRolesAndHeroes = {
 
 // Challenge 2: Support Mastery
 // Play as support
-// Place at least 10 wards (type 1) in each game.
-// Deward (type 0) at least 5 enemy wards.
+// Place at least 10 wards in each game.
+// Deward (type 0) at least 2 enemy wards.
 // Assist in at least 10 kills.
 export const supportMastery = {
   condition: (match) =>
     (match.role === "LIGHT_SUPPORT" || match.role === "HARD_SUPPORT") &&
-    match.stats.wards.filter((ward) => ward.type === 1).length >= 10 &&
-    match.stats.wards.filter((ward) => ward.type === 0).length >= 5 &&
+    match.stats?.wards.filter((ward) => ward.type === 1).length >= 10 &&
+    match.stats.wardDestruction?.filter((ward) => ward?.isWard).length >= 2 &&
     match.assists >= 10,
   streakLength: 5,
 };
 
 // Challenge 3: Stacks on Stacks!
 // Stack at least 5 camps per game
-// Get at least 5 bounty runes per game
-export const objectiveSeeker = {
+// Get at least 8 bounty runes per game
+export const stacksOnStacks = {
   condition: (match) =>
     match.stats.campStack.filter((stack) => stack > 0).length >= 5 &&
-    match.stats.runes.filter((rune) => rune.rune === "BOUNTY").length >= 5,
+    match.stats.runes.filter((rune) => rune.rune === "BOUNTY").length >= 8,
   streakLength: 5,
 };
 
@@ -40,22 +40,25 @@ export const goldMiner = {
     const hasUsedThisHeroBefore = prevMatches.some(
       (prevMatch) => prevMatch.hero.id === match.hero.id
     );
-    return match.goldPerMinute >= 700 && !hasUsedThisHeroBefore;
+    return (
+      match.isVictory && match.goldPerMinute >= 700 && !hasUsedThisHeroBefore
+    );
   },
   streakLength: 3,
 };
 
-// Challenge 5: Not Today Death
-// Have less than 5 deaths three games in a row
-export const theUntouchable = {
-  condition: (match) => match.deaths <= 5,
+// Challenge 5: Say 'No' to Death
+// Win 3 games with less than 6 deaths three games in a row
+// Recommended: findMatchesWithinRange
+export const sayNoToDeath = {
+  condition: (match) => match.deaths <= 6 && match.isVictory,
   streakLength: 3,
 };
 
-// Challenge 7: Skillful Saver
+// Challenge 7: The Healing Touch
 export const skillfulSaver = {
-  condition: (match) => match.heroHealing > 100,
-  streakLength: 5,
+  condition: (match) => match.heroHealing > 7500,
+  streakLength: 3,
 };
 
 // Challenge 8: Courier Hunter

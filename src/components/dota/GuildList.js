@@ -46,7 +46,7 @@ export default async function GuildList() {
                 <h3 className="text-gray-400 text-2xl">{guildMember.name}</h3>
               </div>
               <div className="flex flex-col md:flex-row text-center align-middle w-full items-baseline">
-                {guildMember.matches.map((match) => {
+                {guildMember?.matches?.map((match) => {
                   const currentMatch = match;
                   const { startDateTime, id } = match;
                   const { isVictory, kills, deaths, assists } = currentMatch;
