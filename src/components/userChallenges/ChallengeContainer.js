@@ -1,5 +1,7 @@
-import QuestCard from "@/components/userChallenges/ChallengeCard";
-
+import { Suspense } from "react";
+import ChallengeCard from "@/components/userChallenges/ChallengeCard";
+import ChallengeSelector from "@/components/userChallenges/ChallengeSelector";
+import Loading from "@/components/shared/Loading";
 import { getSteamBaseData } from "@/utils/steamConvert";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { options } from "@/auth/options";
@@ -12,37 +14,46 @@ export default async function ChallengeContainer() {
   const session = await getServerSession(options(null));
   const steamBaseData = getSteamBaseData(session);
 
+  const { userId } = steamBaseData;
+
   const { data: userChallenges, error: userChallengesError } = await supabase
     .from("user_challenges")
-    .select()
-    .eq("user_id", steamBaseData.userId);
+    .select("*")
+    .eq("user_id", userId)
+    .eq("active", true);
 
-  console.log(userChallenges);
-
-  // Filter and determine if any active challenges. Do it for daily, weekly and monthly.
-  const findActiveChallenges = userChallenges?.filter((match) => match.active);
-
-  if (!userChallenges.length) {
+  if (userChallengesError) {
+    <div>Get current challenges error</div>;
   }
 
-  const { data: challengeList, error } = await supabase
-    .from("challenges")
-    .select();
-
-  if (error) {
-    <div>Error fetching quests</div>;
-  }
   return (
     <div className="mx-3 w-1/2">
-      <h2 className="text-2xl mt-10 text-success">Quests</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full pt-5">
-        {/* {challengeList?.map((quest) => (
-          <QuestCard
-            key={quest.id}
-            quest={quest}
-            onClick={() => console.log("clicked")}
-          />
-        ))} */}
+      <h2 className="text-3xl mt-10 text-success mb-5 uppercase underline">
+        Challenges
+      </h2>
+      {findActiveChallenges.length > 0 && (
+        <div className="challengeWrapper">
+          <div>
+            <h2 className="text-2xl text-center uppercase">
+              Active Challenges
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full pt-5">
+            {/* Show active challenges or pending */}
+            {findActiveChallenges?.map((challenge) => (
+              <ChallengeCard key={challenge.id} challenge={challenge} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="challengeWrapper">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full pt-5">
+          <Suspense fallback={<Loading />}>
+            <ChallengeSelector />
+          </Suspense>
+        </div>
       </div>
     </div>
   );

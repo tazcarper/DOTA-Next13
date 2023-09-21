@@ -4,7 +4,7 @@ export default function MatchRender({ match }) {
   const {
     isVictory,
     role,
-    matchId,
+    id,
     kills,
     deaths,
     assists,
@@ -25,7 +25,7 @@ export default function MatchRender({ match }) {
   return (
     <div
       className={`${victoryStyle} ${inactiveStyle} w-full text-center mx-1 my-2 md:my-0 bg-neutral-700`}
-      key={match.id}
+      key={id}
     >
       {!isActive && <div className="absolute w-full bg-gray-500">Inactive</div>}
       <img src={HeroPortrait(shortName)} className="mx-auto w-full" />

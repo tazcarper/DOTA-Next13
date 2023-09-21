@@ -47,19 +47,25 @@ export default async function GuildList() {
               </div>
               <div className="flex flex-col md:flex-row text-center align-middle w-full items-baseline">
                 {guildMember?.matches?.map((match) => {
-                  const currentMatch = match;
-                  const { startDateTime, id } = match;
-                  const { isVictory, kills, deaths, assists } = currentMatch;
+                  const {
+                    startDateTime,
+                    id,
+                    isVictory,
+                    kills,
+                    deaths,
+                    assists,
+                  } = match;
+
                   const matchProps = {
-                    shortName: currentMatch.hero.shortName,
-                    displayName: currentMatch.hero.displayName,
+                    shortName: match.hero.shortName,
+                    displayName: match.hero.displayName,
                     isVictory,
                     kills,
                     deaths,
                     assists,
                     startDateTime,
                     id,
-                    isActive: currentMatch.isActive,
+                    isActive: match.isActive,
                   };
                   return <MatchRender match={matchProps} key={id} />;
                 })}
