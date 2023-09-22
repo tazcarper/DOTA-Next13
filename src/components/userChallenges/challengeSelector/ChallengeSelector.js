@@ -18,7 +18,7 @@ export default function ChallengeSelector({ pendingChallenges, userId }) {
 
   const shuffleChallenges = async () => {
     const pendingChallengeRequest = await fetch(
-      `api/supabase/shufflePendingChallenges?userid=${userId}`
+      `api/supabase/shufflePendingChallenges?userid=${userId}&reset=true`
     );
     const { data: challengeData, error } = await pendingChallengeRequest.json();
     if (error) {

@@ -20,13 +20,16 @@ export default async function ChallengeSelectorContainer() {
   let { data: findPendingChallenges, error: userChallengesError } =
     await supabase
       .from("user_challenges")
-      .select("*")
+      .select("challenges (*)")
       .eq("user_id", userId)
       .eq("pending", true);
   if (userChallengesError) {
     return <div>Get current challenges error</div>;
   }
 
+  findPendingChallenges = findPendingChallenges.map(
+    (challenge) => challenge.challenges
+  );
   // If no pending, get pending and save in DB
   if (findPendingChallenges?.length <= 0) {
     const pendingChallenges = await getRandomPendingChallenges({ supabase });
@@ -39,23 +42,10 @@ export default async function ChallengeSelectorContainer() {
     findPendingChallenges = data;
   }
 
-  const challengeIds = findPendingChallenges.map(
-    (challenge) => challenge.challenge_id
-  );
-
-  const { data: challengeData, error: challengeError } = await supabase
-    .from("challenges")
-    .select()
-    .in("challenge_id", challengeIds);
-
-  if (challengeError) {
-    console.error("Error getting challenges after saving:", challengeError);
-    responseError = challengeError;
-    return;
-  }
+  console.log(findPendingChallenges);
 
   const updatedPendingChallenges = await addMediaToChallenge({
-    challengeData,
+    challengeData: findPendingChallenges,
     supabase,
   });
 

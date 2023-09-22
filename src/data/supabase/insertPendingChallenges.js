@@ -6,14 +6,12 @@ export default async function insertPendingChallenges({
 }) {
   let responseError = null;
 
-  const {
-    data: currentPendingChallenges,
-    error: currentPendingChallengesError,
-  } = await supabaseClient
-    .from("user_challenges")
-    .select("id")
-    .eq("user_id", userId)
-    .eq("pending", true);
+  let { data: currentPendingChallenges, error: currentPendingChallengesError } =
+    await supabaseClient
+      .from("user_challenges")
+      .select("challenges (*)")
+      .eq("user_id", userId)
+      .eq("pending", true);
 
   if (currentPendingChallengesError) {
     console.error("Error fetching challenges:", currentPendingChallengesError);
@@ -21,7 +19,15 @@ export default async function insertPendingChallenges({
     return;
   }
 
+  currentPendingChallenges = currentPendingChallenges.map(
+    (challenge) => challenge.challenges
+  );
+
   const pendingCount = currentPendingChallenges.length;
+
+  if (pendingCount !== 0) {
+    return { data: currentPendingChallenges, error: "Already found 3" };
+  }
 
   pendingChallenges = pendingChallenges.map(
     (challenge) => challenge.challenge_id
@@ -38,7 +44,7 @@ export default async function insertPendingChallenges({
   const { data, error } = await supabaseClient
     .from("user_challenges")
     .insert(challengesToInsert)
-    .select();
+    .select("challenges (*)");
 
   if (error) {
     console.error("Error saving challenge:", error);
@@ -46,18 +52,7 @@ export default async function insertPendingChallenges({
     return;
   }
 
-  const challengeIds = data.map((challenge) => challenge.challenge_id);
+  const challengeList = data.map((challenge) => challenge.challenges);
 
-  const { data: challengeData, error: challengeError } = await supabaseClient
-    .from("challenges")
-    .select("*")
-    .in("challenge_id", challengeIds);
-
-  if (challengeError) {
-    console.error("Error getting challenges after saving:", challengeError);
-    responseError = challengeError;
-    return;
-  }
-
-  return { data: challengeData, error: challengeError };
+  return { data: challengeList, error: error };
 }
