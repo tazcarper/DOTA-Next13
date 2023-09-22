@@ -43,18 +43,18 @@ export default function ChallengeSelector({
     // Maybe not needed?
     router.refresh();
   };
-
   return (
     <div className="w-full">
       {activeChallenges.length <= 1 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full pt-5">
           {availableChallenges?.length > 0 &&
             availableChallenges.map((challenge) => (
-              <ChallengeCard
-                key={challenge.challenge_id}
-                challenge={challenge}
-                onClick={() => selectChallenge(challenge.challenge_id)}
-              />
+              <div key={challenge.challenge_id}>
+                <ChallengeCard
+                  challenge={challenge}
+                  onClick={() => selectChallenge(challenge.challenge_id)}
+                />
+              </div>
             ))}
         </div>
       )}

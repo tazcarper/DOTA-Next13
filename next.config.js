@@ -9,6 +9,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "kfnicsarxykxwcllyxgz.supabase.co",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.cloudflare.steamstatic.com",
+      },
     ],
   },
 };

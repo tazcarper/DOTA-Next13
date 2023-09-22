@@ -1,5 +1,5 @@
 import MatchList from "@/components/dota/MatchList";
-import GuildList from "@/components/dota/GuildList";
+import MatchHistoryContainer from "@/components/dota/matchHistory/MatchHistoryContainer";
 import ChallengeSelectorContainer from "@/components/userChallenges/challengeSelector/ChallengeSelectorContainer";
 import Loading from "@/components/shared/Loading";
 import ActiveChallengeContainer from "@/components/userChallenges/activeChallenges/ActiveChallengeContainer";
@@ -55,9 +55,7 @@ export default async function Dota(props) {
 
       <div className="flex">
         <div className="w-1/2">
-          <Suspense fallback={<Loading />}>
-            <GuildList />
-          </Suspense>
+          <MatchHistoryContainer />
         </div>
         <div className="w-1/2">
           <Suspense fallback={<Loading />}>

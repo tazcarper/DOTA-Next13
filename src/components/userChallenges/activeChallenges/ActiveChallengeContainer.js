@@ -46,11 +46,9 @@ export default async function ActiveChallengeContainer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full pt-5">
           {activeChallenges?.map((challenge) => {
             return (
-              <ChallengeCard
-                key={challenge.challenge_id}
-                challenge={challenge}
-                active={true}
-              />
+              <div key={challenge.challenge_id}>
+                <ChallengeCard challenge={challenge} active={true} />
+              </div>
             );
           })}
         </div>

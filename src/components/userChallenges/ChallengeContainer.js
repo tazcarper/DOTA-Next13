@@ -2,10 +2,12 @@ import { Suspense } from "react";
 import ChallengeCard from "@/components/userChallenges/ChallengeCard";
 import ChallengeSelector from "@/components/userChallenges/ChallengeSelector";
 import Loading from "@/components/shared/Loading";
-import { getSteamBaseData } from "@/utils/steamConvert";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { options } from "@/auth/options";
 
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+
+// auth
+import { options } from "@/auth/options";
+import { getSteamBaseData } from "@/utils/steamConvert";
 import { getServerSession } from "next-auth/next";
 import { cookies } from "next/headers";
 
@@ -13,7 +15,6 @@ export default async function ChallengeContainer() {
   const supabase = createServerComponentClient({ cookies });
   const session = await getServerSession(options(null));
   const steamBaseData = getSteamBaseData(session);
-
   const { userId } = steamBaseData;
 
   const { data: userChallenges, error: userChallengesError } = await supabase
@@ -42,7 +43,9 @@ export default async function ChallengeContainer() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full pt-5">
             {/* Show active challenges or pending */}
             {findActiveChallenges?.map((challenge) => (
-              <ChallengeCard key={challenge.id} challenge={challenge} />
+              <div key={challenge.challenge_id}>
+                <ChallengeCard challenge={challenge} />
+              </div>
             ))}
           </div>
         </div>

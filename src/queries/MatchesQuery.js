@@ -1,9 +1,16 @@
 import { gql } from "@apollo/client";
 
 const PlayerQuery = gql`
-  query PlayerMatchesQuery($steamAccountId: Long!) {
+  query PlayerMatchesQuery(
+    $steamAccountId: Long!
+    $startDateTime: Long
+    $take: Int = 5
+    $after: Long
+  ) {
     player(steamAccountId: $steamAccountId) {
-      matches(request: { startDateTime: 1693951373 }) {
+      matches(
+        request: { startDateTime: $startDateTime, take: $take, after: $after }
+      ) {
         id
         startDateTime
         players(steamAccountId: $steamAccountId) {
