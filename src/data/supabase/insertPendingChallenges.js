@@ -52,7 +52,7 @@ export default async function insertPendingChallenges({
     return;
   }
 
-  const challengeList = data.map((challenge) => challenge.challenges);
+  // const challengeList = data.map((challenge) => challenge.challenges);
 
-  return { data: challengeList, error: error };
+  return { data: data, error: error };
 }

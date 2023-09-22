@@ -2,6 +2,7 @@ import MatchList from "@/components/dota/MatchList";
 import GuildList from "@/components/dota/GuildList";
 import ChallengeSelectorContainer from "@/components/userChallenges/challengeSelector/ChallengeSelectorContainer";
 import Loading from "@/components/shared/Loading";
+import ActiveChallengeContainer from "@/components/userChallenges/activeChallenges/ActiveChallengeContainer";
 
 import getPlayerData from "@/queries/recipes/getPlayerData";
 import initiateUser from "@/data/supabase/helpers/initiateUser";
@@ -53,10 +54,15 @@ export default async function Dota(props) {
       </Suspense>
 
       <div className="flex">
-        <Suspense fallback={<Loading />}>
-          <GuildList />
-        </Suspense>
         <div className="w-1/2">
+          <Suspense fallback={<Loading />}>
+            <GuildList />
+          </Suspense>
+        </div>
+        <div className="w-1/2">
+          <Suspense fallback={<Loading />}>
+            <ActiveChallengeContainer />
+          </Suspense>
           <Suspense fallback={<Loading />}>
             <ChallengeSelectorContainer />
           </Suspense>

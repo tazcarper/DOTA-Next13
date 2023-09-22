@@ -9,6 +9,7 @@ import { options } from "@/auth/options";
 import insertPendingChallenges from "@/data/supabase/insertPendingChallenges";
 import { getServerSession } from "next-auth/next";
 import { cookies } from "next/headers";
+import getUserChallenges from "@/data/supabase/getUserChallenges";
 
 export default async function ChallengeSelectorContainer() {
   const supabase = createServerComponentClient({ cookies });
@@ -17,43 +18,38 @@ export default async function ChallengeSelectorContainer() {
 
   const { userId } = steamBaseData;
 
-  let { data: findPendingChallenges, error: userChallengesError } =
-    await supabase
-      .from("user_challenges")
-      .select("challenges (*)")
-      .eq("user_id", userId)
-      .eq("pending", true);
-  if (userChallengesError) {
-    return <div>Get current challenges error</div>;
-  }
+  let { pendingChallenges, activeChallenges } = await getUserChallenges({
+    userId,
+    supabase,
+  });
 
-  findPendingChallenges = findPendingChallenges.map(
-    (challenge) => challenge.challenges
-  );
   // If no pending, get pending and save in DB
-  if (findPendingChallenges?.length <= 0) {
-    const pendingChallenges = await getRandomPendingChallenges({ supabase });
+  if (pendingChallenges?.length <= 0) {
+    let randomPendingChallenges = await getRandomPendingChallenges({
+      supabase,
+      activeChallenges,
+    });
     const { data, error } = await insertPendingChallenges({
       userId,
-      pendingChallenges: pendingChallenges,
+      pendingChallenges: randomPendingChallenges,
       supabaseClient: supabase,
     });
 
-    findPendingChallenges = data;
+    pendingChallenges = data;
   }
 
-  console.log(findPendingChallenges);
-
   const updatedPendingChallenges = await addMediaToChallenge({
-    challengeData: findPendingChallenges,
+    challengeData: pendingChallenges.map((challenge) => challenge.challenges),
     supabase,
   });
 
   return (
-    <div className="challengeWrapper">
+    <div className="challengeWrapper mt-10">
+      <h2 className="text-2xl uppercase text-center">Available Challenges</h2>
       <Suspense fallback={<Loading />}>
         <ChallengeSelector
           pendingChallenges={updatedPendingChallenges}
+          activeChallenges={activeChallenges}
           userId={userId}
         />
       </Suspense>

@@ -5,6 +5,7 @@ import { toUserID } from "@/utils/steamConvert";
 import insertPendingChallenges from "@/data/supabase/insertPendingChallenges";
 import resetPendingChallenges from "@/data/supabase/resetPendingChallenges";
 import getRandomPendingChallenges from "@/data/supabase/getRandomPendingChallenges";
+import getUserChallenges from "@/src/data/supabase/getUserChallenges";
 import { NextResponse } from "next/server";
 export async function GET(req, res) {
   const supabase = createRouteHandlerClient({ cookies });
@@ -20,7 +21,15 @@ export async function GET(req, res) {
       supabaseClient: supabase,
     });
 
-    const pendingChallenges = await getRandomPendingChallenges({ supabase });
+    let { activeChallenges } = await getUserChallenges({
+      userId,
+      supabase,
+    });
+
+    const pendingChallenges = await getRandomPendingChallenges({
+      supabase,
+      activeChallenges,
+    });
 
     // Add pending challenges
     const insertIntoDb = await insertPendingChallenges({
