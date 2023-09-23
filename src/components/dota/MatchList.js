@@ -39,17 +39,8 @@ export default function MatchList({ initialSteamId }) {
 
   return (
     <div>
-      <InputSteamId handleSubmit={handleSubmit} />
-      <div className="flex flex-row justify-center items-center my-10">
-        <img
-          src={data.player.steamAccount.avatar}
-          className="rounded-full w-[100px] mr-4 "
-        />
-        <h1 className="inline-block text-6xl">{`${data.player.steamAccount.name}`}</h1>
-      </div>
-
       <Suspense fallback={<div>Loading...</div>}>
-        <div className="flex flex-col md:flex-row text-center align-middle w-full">
+        <div className="flex flex-col md:flex-row text-center align-middle w-1/2 gap-5 mt-16">
           {steamId &&
             data?.player?.matches.map((match) => {
               const { id, startDateTime } = match;

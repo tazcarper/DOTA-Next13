@@ -2,16 +2,23 @@ import Image from "next/image";
 import generateHeroPortrait from "@/components/shared/HeroPortrait";
 export default function GroupMatchList({ groupMatches }) {
   return (
-    <div>
+    <div className="text-center mt-10">
+      <h1 className="text-4xl">Set History</h1>
       {groupMatches?.map((grouping) => {
         return (
-          <div className="flex gap-2 my-3 bg-neutral-800 ">
+          <div
+            className="flex gap-2 my-3 bg-neutral-800"
+            key={`${grouping[0].id}-grouping`}
+          >
             <div className="avatars flex gap-2 p-3">
               {grouping.map((match) => {
                 const { isVictory } = match.players[0];
                 const hero = match.players[0].hero;
                 return (
-                  <div className="avatar">
+                  <div
+                    className="avatar"
+                    key={`${match.id}-avatar-${hero.shortName}`}
+                  >
                     <div className="w-16 rounded-full">
                       <Image
                         src={generateHeroPortrait(hero.shortName)}

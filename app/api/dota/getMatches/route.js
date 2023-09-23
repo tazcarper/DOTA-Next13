@@ -28,6 +28,7 @@ export async function GET(req, res) {
     try {
       matchQuery = await client.query({
         query: MatchesQuery,
+        fetchPolicy: "cache-first",
         variables: {
           steamAccountId: parseInt(req_user_lookup_id),
           take: parseInt(req_take),
@@ -42,7 +43,6 @@ export async function GET(req, res) {
       });
     }
 
-    console.log(matchQuery);
     return NextResponse.json({ data: matchQuery?.data, error: null });
   } else {
     return NextResponse.json({ data: null, error: "Not Autorized" });
