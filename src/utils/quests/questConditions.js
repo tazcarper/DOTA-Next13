@@ -1,3 +1,11 @@
+export const simpleKillChallenge = {
+  condition: (match) => {
+    // console.log(match.stats)
+   return  match.kills >= 7
+  },
+  streakLength: 2
+}
+
 // Challenge 1: Diverse Roles and Heroes
 // In 5 games, play 5 different heroes each from a unique role
 // Unique heroes only
@@ -105,4 +113,25 @@ export const experienceHarvester = {
 export const teamPlayer = {
   condition: (match) => match.award === "MVP",
   streakLength: 5,
+};
+
+
+// ENUM-ish method to get references to the condition methods
+// challenge_id is the property
+
+
+export const ChallengeMethods = {
+  1: diverseRolesAndHeroes,
+  2: supportMastery,
+  3: stacksOnStacks,
+  4: goldMiner,
+  5: sayNoToDeath,
+  6: skillfulSaver,
+  7: courierHunter,
+  8: mapDominance,
+  9: efficiencyExpert,
+  10: heroDominance,
+  11: experienceHarvester,
+  12: teamPlayer,
+  13: simpleKillChallenge,
 };

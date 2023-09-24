@@ -23,7 +23,7 @@ export async function GET(req, res) {
   }
   if (parseInt(userId) === parseInt(req_user_id)) {
     const client = getClient();
-    console.log(req_user_lookup_id, req_take);
+
     let matchQuery;
     try {
       matchQuery = await client.query({

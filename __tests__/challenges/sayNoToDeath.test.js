@@ -43,7 +43,7 @@ describe("Say No To Death Condition Test", () => {
       conditions
     );
 
-    console.log(result.sayNoToDeath.results);
+  
 
     expect(result.sayNoToDeath.results).toStrictEqual([
       [1, 3, 4],
