@@ -34,38 +34,25 @@ describe("Gold Miner Condition Test", () => {
     },
   ];
 
-  // Challenge 4: Greed is Good!
-  // Win 3 games in a row with over 700 GPM and use unique heroes
-  // export const goldMiner = {
-  //   condition: (match, prevMatches = []) => {
-  //     const hasUsedThisHeroBefore = prevMatches.some(
-  //       (prevMatch) => prevMatch.hero.id === match.hero.id
-  //     );
-  //     return match.goldPerMinute >= 700 && !hasUsedThisHeroBefore;
-  //   },
-  //   streakLength: 3,
-  // };
-  const conditions = {
-    goldMiner,
-  };
+  const challenge_id = 1;
+  const conditions = [{ challenge_id, ...goldMiner }];
 
   test("should return a valid index for goldMiner condition", () => {
     const result = findSequentialMatches(sampleMatches, conditions);
 
-    expect(result.goldMiner.startIndex).toBe(1); // It starts at the first index
-    expect(result.goldMiner.streakLength).toBe(3);
+    expect(result[challenge_id].length).toBe(1);
+    expect(result[challenge_id][0].length).toBe(3);
   });
 
   test("should return -1 if the condition is not met", () => {
     // change all to 690 gold
     const matchesWithFailCondition = sampleMatches.map((match) => ({
       ...match,
-      goldPerMinute: 690,
+      goldPerMinute: 444,
     }));
     const result = findSequentialMatches(matchesWithFailCondition, conditions);
 
-    expect(result.goldMiner.startIndex).toBe(-1);
-    expect(result.goldMiner.streakLength).toBe(0);
+    expect(result[challenge_id].length).toBe(0);
   });
 
   test("Must be unique heroes", () => {
@@ -92,8 +79,7 @@ describe("Gold Miner Condition Test", () => {
     ];
     const result = findSequentialMatches(matchesWithFailCondition, conditions);
 
-    expect(result.goldMiner.startIndex).toBe(-1);
-    expect(result.goldMiner.streakLength).toBe(0);
+    expect(result[challenge_id].length).toBe(0);
   });
 
   // Add more tests for other challenges and edge cases as needed.

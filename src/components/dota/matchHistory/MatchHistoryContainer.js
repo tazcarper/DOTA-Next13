@@ -1,9 +1,10 @@
 import getMatches from "@/queries/recipes/getMatches";
+import { simpleKillChallenge } from "@/utils/quests/questConditions";
 
 // utils
 import generateMatchGroups from "@/utils/generateMatchGroups";
-import {ChallengeMethods} from "@/utils/quests/questConditions";
-import {findSequentialMatches,} from "@/utils/quests/findSequentialMatches"
+import { ChallengeMethods } from "@/utils/quests/questConditions";
+import { findSequentialMatches } from "@/utils/quests/findSequentialMatches";
 
 // auth
 import { options } from "@/auth/options";
@@ -16,7 +17,6 @@ import getUserChallenges from "@/src/data/supabase/getUserChallenges";
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 
-
 export default async function MatchHistoryContainer() {
   const session = await getServerSession(options(null));
   const steamBaseData = getSteamBaseData(session);
@@ -25,43 +25,45 @@ export default async function MatchHistoryContainer() {
 
   const matchList = await getMatches({ userId, take: 10 });
 
-  const {activeChallenges} = await getUserChallenges({userId, supabase});
+  const { activeChallenges } = await getUserChallenges({ userId, supabase });
 
-  
   // Build the conditions list
-  const challengeConditions = activeChallenges.map((challenge => {
-    const challengeConditions = ChallengeMethods[challenge.challenge_id]
+  const challengeConditions = activeChallenges.map((challenge) => {
+    const challengeConditions = ChallengeMethods[challenge.challenge_id];
     return {
       condition: challengeConditions,
       challenge_id: challenge.challenge_id,
-    }
-  }));
+    };
+  });
 
-  console.log(challengeConditions)
-
-  let conditionObj = {}
+  let conditionObj = {};
   challengeConditions.map((i) => {
-    conditionObj[i.challenge_id] = i.condition
-  })
- 
-  console.log(conditionObj)
+    conditionObj[i.challenge_id] = i.condition;
+  });
+
   const groupMatches = generateMatchGroups(matchList);
 
   const results = groupMatches.map((group) => {
-  let matches = group.map((match) => match.players[0])
-  console.log( findSequentialMatches(matches, conditionObj))
-  return {...findSequentialMatches(matches, conditionObj), matches: matches.map((match) => match.hero.shortName)}
-  
-  })
+    let matches = group.map((match) => match.players[0]);
+    const tempConditions = [
+      {
+        challenge_id: 13,
+        ...simpleKillChallenge,
+      },
+    ];
+    return {
+      matches: [...group],
+      conditions: findSequentialMatches(matches, tempConditions),
+    };
+  });
 
-const reverseIt = results.reverse();
-
+  // const reverseIt = results.reverse();
 
   // Dont show first one since it will always be visible on dashboard
-  groupMatches.shift();
+  results.shift();
   return (
     <>
-      <GroupMatchList groupMatches={groupMatches}   />
+      <GroupMatchList groupMatches={results} />
     </>
   );
 }

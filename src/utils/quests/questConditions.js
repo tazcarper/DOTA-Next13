@@ -1,19 +1,33 @@
+const UniqueCheck = (matches) => {
+  const uniqueHeroes = new Set();
+  const uniqueRoles = new Set();
+  matches.forEach((match) => {
+    uniqueHeroes.add(match.hero.id);
+    uniqueRoles.add(match.role);
+  });
+  return { uniqueHeroes, uniqueRoles };
+};
+
 export const simpleKillChallenge = {
-  condition: (match) => {
-    // console.log(match.stats)
-   return  match.kills >= 7
+  condition: (matches) => {
+    // Checks if every match in the array has 7 or more kills
+    return matches.every((match) => match.kills >= 7);
   },
-  streakLength: 2
-}
+  streakLength: 2,
+};
 
 // Challenge 1: Diverse Roles and Heroes
 // In 5 games, play 5 different heroes each from a unique role
 // Unique heroes only
 export const diverseRolesAndHeroes = {
-  condition: (match, prevMatches = []) =>
-    prevMatches.every((prev) => prev.hero.id !== match.hero.id) &&
-    prevMatches.every((prev) => prev.role !== match.role) &&
-    match.isVictory,
+  condition: (streakMatches = []) => {
+    const { uniqueHeroes, uniqueRoles } = UniqueCheck(streakMatches);
+    return (
+      uniqueHeroes.size === streakMatches.length &&
+      uniqueRoles.size === streakMatches.length &&
+      streakMatches.every((match) => match.isVictory)
+    );
+  },
   streakLength: 5,
 };
 
@@ -35,22 +49,37 @@ export const supportMastery = {
 // Stack at least 5 camps per game
 // Get at least 8 bounty runes per game
 export const stacksOnStacks = {
-  condition: (match) =>
-    match.stats.campStack.filter((stack) => stack > 0).length >= 5 &&
-    match.stats.runes.filter((rune) => rune.rune === "BOUNTY").length >= 8,
+  condition: (matches) => {
+    for (const match of matches) {
+      const validStacks =
+        match.stats.campStack.filter((stack) => stack > 0).length >= 5;
+      const validRunes =
+        match.stats.runes.filter((rune) => rune.rune === "BOUNTY").length >= 8;
+      if (!validStacks || !validRunes) {
+        return false; // if any match does not satisfy the condition, return false
+      }
+    }
+    return true; // all matches satisfy the condition
+  },
   streakLength: 5,
 };
 
 // Challenge 4: Greed is Good!
 // Win 3 games in a row with over 700 GPM and use unique heroes
 export const goldMiner = {
-  condition: (match, prevMatches = []) => {
-    const hasUsedThisHeroBefore = prevMatches.some(
-      (prevMatch) => prevMatch.hero.id === match.hero.id
-    );
-    return (
-      match.isVictory && match.goldPerMinute >= 700 && !hasUsedThisHeroBefore
-    );
+  condition: (matches) => {
+    // Ensure all matches are victories and have GPM >= 700
+    if (
+      !matches.every((match) => match.isVictory && match.goldPerMinute >= 500)
+    ) {
+      return false;
+    }
+
+    // Get the unique hero IDs across all matches
+    const { uniqueHeroes } = UniqueCheck(matches);
+
+    // Ensure the number of unique heroes equals the number of matches
+    return uniqueHeroes.size === matches.length;
   },
   streakLength: 3,
 };
@@ -115,10 +144,8 @@ export const teamPlayer = {
   streakLength: 5,
 };
 
-
 // ENUM-ish method to get references to the condition methods
 // challenge_id is the property
-
 
 export const ChallengeMethods = {
   1: diverseRolesAndHeroes,

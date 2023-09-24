@@ -13,30 +13,25 @@ describe("Diverse Roles and Heroes Condition Test", () => {
     { hero: { id: 105 }, role: "offlane", isVictory: true }, // Adding another repeated role and hero
   ];
 
-  // diverseRolesAndHeroes = {
-  //   condition: (match, prevMatches = []) =>
-  //     prevMatches.every((prev) => prev.hero.id !== match.hero.id) &&
-  //     prevMatches.every((prev) => prev.role !== match.role) &&
-  //     match.isVictory,
-  //   streakLength: 5,
-  // };
-  const conditions = {
-    diverseRolesAndHeroes,
-  };
+  const challenge_id = 1;
+
+  const conditions = [
+    {
+      challenge_id,
+      ...diverseRolesAndHeroes,
+    },
+  ];
 
   test("should return a valid index for diverseRolesAndHeroes condition", () => {
-    const matchesWithSuccessCondition = [
-      ...sampleMatches,
-      { hero: { id: 105 }, role: "offlane", isVictory: true },
-    ];
+    const matchesWithSuccessCondition = [...sampleMatches];
 
     const result = findSequentialMatches(
       matchesWithSuccessCondition,
       conditions
     );
 
-    expect(result.diverseRolesAndHeroes.startIndex).toBe(0);
-    expect(result.diverseRolesAndHeroes.streakLength).toBe(5);
+    expect(result[challenge_id].length).toBe(1);
+    expect(result[challenge_id][0].length).toBe(5);
   });
 
   test("Should fail if playing same heros", () => {
@@ -48,10 +43,10 @@ describe("Diverse Roles and Heroes Condition Test", () => {
       { hero: { id: 105 }, role: "offlane", isVictory: true },
       { hero: { id: 102 }, role: "offlane", isVictory: true },
     ];
+
     const result = findSequentialMatches(matchesWithFailCondition, conditions);
 
-    expect(result.diverseRolesAndHeroes.startIndex).toBe(-1);
-    expect(result.diverseRolesAndHeroes.streakLength).toBe(0);
+    expect(result[challenge_id].length).toBe(0);
   });
 
   test("Should fail if you dont win all your games", () => {
@@ -62,9 +57,9 @@ describe("Diverse Roles and Heroes Condition Test", () => {
       { hero: { id: 104 }, role: "LIGHT_SUPPORT", isVictory: true },
       { hero: { id: 105 }, role: "HARD_SUPPORT", isVictory: true },
     ];
+
     const result = findSequentialMatches(matchesWithFailCondition, conditions);
 
-    expect(result.diverseRolesAndHeroes.startIndex).toBe(-1);
-    expect(result.diverseRolesAndHeroes.streakLength).toBe(0);
+    expect(result[challenge_id].length).toBe(0);
   });
 });

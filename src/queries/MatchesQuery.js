@@ -45,6 +45,9 @@ const PlayerQuery = gql`
               positionY
             }
             campStack
+            runes {
+              rune
+            }
           }
 
           numDenies

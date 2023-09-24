@@ -26,44 +26,28 @@
 //     },
 //   };
 
-export function findSequentialMatches(matches, conditions) {
-  const results = {};
-  const counters = {};
-  const lastStartIndexes = {};
+export const findSequentialMatches = (allMatches, conditions) => {
+  let result = {};
 
-  for (let conditionName in conditions) {
-    counters[conditionName] = 0;
-    lastStartIndexes[conditionName] = -1;
-  }
+  conditions.forEach(({ challenge_id, condition, streakLength }) => {
+    let qualifying_matches = [];
 
-  for (let i = 0; i < matches.length; i++) {
-    for (let conditionName in conditions) {
-      const conditionObj = conditions[conditionName];
-      const prevMatches = matches.slice(
-        Math.max(0, i - conditionObj.streakLength + 1),
-        i
-      ); // extract previous matches for the streak
+    for (let i = 0; i < allMatches.length; i++) {
+      if (i + streakLength > allMatches.length) break; // exit if insufficient remaining matches
 
-      if (conditionObj.condition(matches[i], prevMatches)) {
-        counters[conditionName]++;
+      const streakMatches = allMatches.slice(i, i + streakLength);
 
-        if (counters[conditionName] === conditionObj.streakLength) {
-          lastStartIndexes[conditionName] = i - conditionObj.streakLength + 1;
-        }
-      } else {
-        counters[conditionName] = 0;
+      if (condition(streakMatches)) {
+        const matchIndices = Array.from(
+          { length: streakLength },
+          (_, index) => i + index
+        );
+        qualifying_matches.push(matchIndices);
       }
     }
-  }
 
-  for (let conditionName in conditions) {
-    const conditionObj = conditions[conditionName];
-    results[conditionName] = {
-      startIndex: lastStartIndexes[conditionName],
-      streakLength:
-        lastStartIndexes[conditionName] === -1 ? 0 : conditionObj.streakLength,
-    };
-  }
+    result[challenge_id] = qualifying_matches;
+  });
 
-  return results;
-}
+  return result;
+};
