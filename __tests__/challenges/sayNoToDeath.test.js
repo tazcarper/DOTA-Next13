@@ -2,9 +2,10 @@ import { findMatchesWithinRange } from "../../src/utils/quests/findMatchesWithin
 import { sayNoToDeath } from "../../src/utils/quests/questConditions";
 
 describe("Say No To Death Condition Test", () => {
-  const conditions = {
-    sayNoToDeath,
-  };
+  const conditions = [{
+    ...sayNoToDeath,
+    challenge_id: 'test'
+  }];
 
   // Success tests
 
@@ -17,15 +18,11 @@ describe("Say No To Death Condition Test", () => {
       { deaths: 3, isVictory: true },
     ];
 
-    const result = findMatchesWithinRange(
-      matchesWithSuccessCondition,
-      conditions
-    );
 
-    expect(result.sayNoToDeath.results).toStrictEqual([
-      [1, 2, 3],
-      [2, 3, 4],
-    ]);
+    const result = findMatchesWithinRange({matches: matchesWithSuccessCondition, conditions, maxRange : 5, qualifyCount : 4});
+
+    expect(result.test.length).toBe(1);
+    
   });
 
   test("should return a valid index for SayNoToDeath condition", () => {
@@ -38,16 +35,11 @@ describe("Say No To Death Condition Test", () => {
       { deaths: 3, isVictory: true },
     ];
 
-    const result = findMatchesWithinRange(
-      matchesWithSuccessCondition,
-      conditions
-    );
+    const result = findMatchesWithinRange({matches: matchesWithSuccessCondition, conditions, maxRange : 5, qualifyCount : 3});
 
-  
-
-    expect(result.sayNoToDeath.results).toStrictEqual([
-      [1, 3, 4],
+    expect(result.test).toStrictEqual([
       [3, 4, 5],
+      [1, 3, 4]
     ]);
   });
 
@@ -64,8 +56,8 @@ describe("Say No To Death Condition Test", () => {
       { deaths: 1, isVictory: true },
     ];
 
-    const result = findMatchesWithinRange(matchesWithFailCondition, conditions);
+    const result = findMatchesWithinRange({matches: matchesWithFailCondition, conditions, maxRange : 5, qualifyCount : 3});
 
-    expect(result.sayNoToDeath.results).toStrictEqual([]);
+    expect(result.test.length).toBe(0);
   });
 });

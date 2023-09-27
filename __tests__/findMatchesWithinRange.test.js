@@ -1,6 +1,13 @@
 import { findMatchesWithinRange } from "../src/utils/quests/findMatchesWithinRange";
+
 describe("findMatchesWithinRange function", () => {
-  const condition = (match) => match.role === "carry" && match.isVictory;
+  const conditions = [
+    {
+      condition: (match) => match.role === "carry" && match.isVictory,
+      challenge_id: 'carryVictoryChallenge',
+      streakLength: 3
+    },
+  ];
 
   test("All matches meet the condition", () => {
     const matches = [
@@ -11,7 +18,8 @@ describe("findMatchesWithinRange function", () => {
       { role: "carry", isVictory: true },
       { role: "carry", isVictory: true },
     ];
-    expect(findMatchesWithinRange(matches, condition, 5, 3)).toBe(1);
+    const result = findMatchesWithinRange({matches, conditions, maxRange : 5, qualifyCount : 5});
+    expect(result.carryVictoryChallenge.length).toBe(2);
   });
 
   test("Matches from first 5 at zero index", () => {
@@ -23,7 +31,8 @@ describe("findMatchesWithinRange function", () => {
       { role: "carry", isVictory: true },
       { role: "middle", isVictory: false },
     ];
-    expect(findMatchesWithinRange(matches, condition, 5, 3)).toBe(0);
+    const result = findMatchesWithinRange({matches, conditions, maxRange : 5, qualifyCount : 3});
+    expect(result.carryVictoryChallenge.length).toBe(1);
   });
 
   test("5 in a row", () => {
@@ -34,11 +43,13 @@ describe("findMatchesWithinRange function", () => {
       { role: "carry", isVictory: true },
       { role: "carry", isVictory: true },
       { role: "carry", isVictory: true },
+      { role: "middle", isVictory: false },
       { role: "carry", isVictory: true },
       { role: "middle", isVictory: false },
-      { role: "middle", isVictory: false },
     ];
-    expect(findMatchesWithinRange(matches, condition, 5, 5)).toBe(2);
+    const result = findMatchesWithinRange({matches, conditions, maxRange : 4, qualifyCount : 4});
+
+    expect(result.carryVictoryChallenge.length).toBe(1);
   });
 
   test("2 in any order", () => {
@@ -51,6 +62,7 @@ describe("findMatchesWithinRange function", () => {
       { role: "middle", isVictory: false },
       { role: "carry", isVictory: true },
     ];
-    expect(findMatchesWithinRange(matches, condition, 5, 2)).toBe(2);
+    const result = findMatchesWithinRange({matches, conditions, maxRange : 5, qualifyCount : 2});
+    expect(result.carryVictoryChallenge.length).toBe(1);
   });
 });

@@ -37,13 +37,17 @@ export const diverseRolesAndHeroes = {
 // Deward (type 0) at least 2 enemy wards.
 // Assist in at least 10 kills.
 export const supportMastery = {
-  condition: (match) =>
-    (match.role === "LIGHT_SUPPORT" || match.role === "HARD_SUPPORT") &&
-    match.stats?.wards.filter((ward) => ward.type === 1).length >= 10 &&
-    match.stats.wardDestruction?.filter((ward) => ward?.isWard).length >= 2 &&
-    match.assists >= 10,
+  condition: (matches) => {
+    return matches.every(match =>
+      (match.role === "LIGHT_SUPPORT" || match.role === "HARD_SUPPORT") &&
+      match.stats?.wards.filter((ward) => ward.type === 1).length >= 10 &&
+      match.stats.wardDestruction?.filter((ward) => ward?.isWard).length >= 2 &&
+      match.assists >= 10
+    );
+  },
   streakLength: 5,
 };
+
 
 // Challenge 3: Stacks on Stacks!
 // Stack at least 5 camps per game
