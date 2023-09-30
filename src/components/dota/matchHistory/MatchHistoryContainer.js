@@ -1,10 +1,10 @@
 import getMatches from "@/queries/recipes/getMatches";
-import { simpleKillChallenge } from "@/utils/quests/questConditions";
 
 // utils
 import generateMatchGroups from "@/utils/generateMatchGroups";
 import { ChallengeMethods } from "@/utils/quests/questConditions";
 import { findSequentialMatches } from "@/utils/quests/findSequentialMatches";
+import { findMatchesWithinRange } from "@/utils/quests/findMatchesWithinRange";
 
 // auth
 import { options } from "@/auth/options";
@@ -25,37 +25,56 @@ export default async function MatchHistoryContainer() {
 
   const matchList = await getMatches({ userId, take: 10 });
 
-  const { activeChallenges } = await getUserChallenges({ userId, supabase });
-
+  const { activeChallenges, successChallenges } = await getUserChallenges({
+    userId,
+    supabase,
+  });
+  console.log("success", successChallenges);
+  console.log(activeChallenges);
   // Build the conditions list
-  const challengeConditions = activeChallenges.map((challenge) => {
-    const challengeConditions = ChallengeMethods[challenge.challenge_id];
-    return {
-      condition: challengeConditions,
-      challenge_id: challenge.challenge_id,
+
+  const challengeConditionGroups = {
+    sequential: [],
+    nonSequential: [],
+  };
+  activeChallenges.forEach((challenge) => {
+    const currentChallenge = {
+      ...challenge.challenges,
+      condition: ChallengeMethods[challenge?.challenge_id].condition,
     };
+    if (currentChallenge.sequential) {
+      challengeConditionGroups.sequential.push(currentChallenge);
+    } else {
+      challengeConditionGroups.nonSequential.push(currentChallenge);
+    }
   });
 
+  console.log(challengeConditionGroups);
   let conditionObj = {};
-  challengeConditions.map((i) => {
-    conditionObj[i.challenge_id] = i.condition;
-  });
 
   const groupMatches = generateMatchGroups(matchList);
 
   const results = groupMatches.map((group) => {
     let matches = group.map((match) => match.players[0]);
-    const tempConditions = [
-      {
-        challenge_id: 13,
-        ...simpleKillChallenge,
-      },
-    ];
+
+    const sequentialConditions = findSequentialMatches(
+      matches,
+      challengeConditionGroups.sequential
+    );
+
+    // update this to get the range and qualifying matches from conditions
+    const nonSequentialConditions = findMatchesWithinRange({
+      matches,
+      conditions: challengeConditionGroups.sequential,
+    });
+
     return {
       matches: [...group],
-      conditions: findSequentialMatches(matches, tempConditions),
+      conditions: { ...sequentialConditions },
     };
   });
+
+  console.log(results);
 
   // const reverseIt = results.reverse();
 
