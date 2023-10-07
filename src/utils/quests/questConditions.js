@@ -104,7 +104,8 @@ export const goldMiner = {
 // Win 3 games with less than 6 deaths three games in a row
 // Recommended: findMatchesWithinRange
 export const sayNoToDeath = {
-  condition: (match) => match.deaths <= 6 && match.isVictory,
+  condition: (matches) =>
+    matches.every((match) => match.deaths <= 6 && match.isVictory),
   streakLength: 3,
 };
 

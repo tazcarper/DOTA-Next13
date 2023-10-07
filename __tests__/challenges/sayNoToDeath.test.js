@@ -2,45 +2,50 @@ import { findMatchesWithinRange } from "../../src/utils/quests/findMatchesWithin
 import { sayNoToDeath } from "../../src/utils/quests/questConditions";
 
 describe("Say No To Death Condition Test", () => {
-  const conditions = [{
-    ...sayNoToDeath,
-    challenge_id: 'test'
-  }];
+  const conditions = [
+    {
+      ...sayNoToDeath,
+      challenge_id: "test",
+      streakRange: 5,
+      streakLength: 4,
+    },
+  ];
 
   // Success tests
 
   test("should return a valid index for SayNoToDeath condition", () => {
     const matchesWithSuccessCondition = [
-      { deaths: 8, isVictory: true },
-      { deaths: 4, isVictory: true },
-      { deaths: 3, isVictory: true },
-      { deaths: 4, isVictory: true },
-      { deaths: 3, isVictory: true },
+      { deaths: 8, isVictory: true, matchId: 1 },
+      { deaths: 4, isVictory: true, matchId: 2 },
+      { deaths: 3, isVictory: true, matchId: 3 },
+      { deaths: 4, isVictory: true, matchId: 4 },
+      { deaths: 3, isVictory: true, matchId: 5 },
     ];
 
-
-    const result = findMatchesWithinRange({matches: matchesWithSuccessCondition, conditions, maxRange : 5, qualifyCount : 4});
-
+    const result = findMatchesWithinRange({
+      matches: matchesWithSuccessCondition,
+      conditions,
+    });
+    console.log(result);
     expect(result.test.length).toBe(1);
-    
   });
 
   test("should return a valid index for SayNoToDeath condition", () => {
     const matchesWithSuccessCondition = [
-      { deaths: 5, isVictory: false },
-      { deaths: 4, isVictory: true },
-      { deaths: 3, isVictory: false },
-      { deaths: 5, isVictory: true },
-      { deaths: 4, isVictory: true },
-      { deaths: 3, isVictory: true },
+      { deaths: 5, isVictory: false, matchId: 1 },
+      { deaths: 4, isVictory: true, matchId: 133 },
+      { deaths: 3, isVictory: false, matchId: 13 },
+      { deaths: 5, isVictory: true, matchId: 4 },
+      { deaths: 4, isVictory: true, matchId: 5 },
+      { deaths: 3, isVictory: true, matchId: 6 },
     ];
 
-    const result = findMatchesWithinRange({matches: matchesWithSuccessCondition, conditions, maxRange : 5, qualifyCount : 3});
+    const result = findMatchesWithinRange({
+      matches: matchesWithSuccessCondition,
+      conditions,
+    });
 
-    expect(result.test).toStrictEqual([
-      [3, 4, 5],
-      [1, 3, 4]
-    ]);
+    expect(result.test).toStrictEqual([[133, 4, 5, 6]]);
   });
 
   // Fail tests
@@ -56,7 +61,10 @@ describe("Say No To Death Condition Test", () => {
       { deaths: 1, isVictory: true },
     ];
 
-    const result = findMatchesWithinRange({matches: matchesWithFailCondition, conditions, maxRange : 5, qualifyCount : 3});
+    const result = findMatchesWithinRange({
+      matches: matchesWithFailCondition,
+      conditions,
+    });
 
     expect(result.test.length).toBe(0);
   });

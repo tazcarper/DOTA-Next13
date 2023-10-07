@@ -35,10 +35,11 @@ export default function GroupMatchList({ groupMatches, activeChallenges }) {
           >
             <div className="avatars flex gap-2 p-3">
               {grouping?.matches?.map((match) => {
-                const { isVictory, kills, assists, deaths } = match.players[0];
+                const { isVictory, kills, assists, deaths, matchId } =
+                  match.players[0];
                 const hero = match.players[0].hero;
                 return (
-                  <div className="flex flex-col">
+                  <div className="flex flex-col" key={matchId}>
                     <div
                       className="avatar"
                       key={`${match.id}-avatar-${hero.shortName}`}
@@ -68,10 +69,13 @@ export default function GroupMatchList({ groupMatches, activeChallenges }) {
               <div className=" justify-center self-center w-full">
                 {buildSuccessChallenges.map((successChallenge) => {
                   return (
-                    <p className="text-green-500">
+                    <p
+                      className="text-green-500"
+                      key={`success-${successChallenge.challenges.name}`}
+                    >
                       <span className="font-bold">
                         {successChallenge.challenges.name}
-                      </span>{" "}
+                      </span>
                       Success!
                     </p>
                   );
