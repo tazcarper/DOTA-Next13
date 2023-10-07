@@ -29,8 +29,8 @@ export default async function MatchHistoryContainer() {
     userId,
     supabase,
   });
-  console.log("success", successChallenges);
-  console.log(activeChallenges);
+  // console.log("success", successChallenges);
+  // console.log(activeChallenges);
   // Build the conditions list
 
   const challengeConditionGroups = {
@@ -55,7 +55,7 @@ export default async function MatchHistoryContainer() {
 
   const results = groupMatches.map((group) => {
     let matches = group.map((match) => match.players[0]);
-
+    console.log(matches);
     const sequentialConditions = findSequentialMatches(
       matches,
       challengeConditionGroups.sequential
@@ -67,13 +67,13 @@ export default async function MatchHistoryContainer() {
       conditions: challengeConditionGroups.nonSequential,
     });
 
+    console.log(nonSequentialConditions["13"]);
+
     return {
       matches: [...group],
       conditions: { ...sequentialConditions, ...nonSequentialConditions },
     };
   });
-
-  console.log(results);
 
   // const reverseIt = results.reverse();
 

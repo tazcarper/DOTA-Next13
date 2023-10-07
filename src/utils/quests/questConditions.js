@@ -11,7 +11,7 @@ const UniqueCheck = (matches) => {
 export const simpleKillChallenge = {
   condition: (matches) => {
     // Checks if every match in the array has 7 or more kills
-    return matches.every((match) => match.kills >= 3);
+    return matches.every((match) => match.kills >= 3 && match.isVictory);
   },
   streakLength: 2,
   streakRange: 5,

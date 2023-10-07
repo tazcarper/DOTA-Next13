@@ -13,26 +13,26 @@ describe("findMatchesWithinRange function", () => {
 
   test("All matches meet the condition", () => {
     const matches = [
-      { role: "carry", isVictory: true },
-      { role: "carry", isVictory: true },
-      { role: "carry", isVictory: true },
-      { role: "carry", isVictory: true },
-      { role: "carry", isVictory: true },
-      { role: "carry", isVictory: true },
+      { matchId: 1, role: "carry", isVictory: true },
+      { matchId: 2, role: "carry", isVictory: true },
+      { matchId: 3, role: "carry", isVictory: true },
+      { matchId: 4, role: "carry", isVictory: true },
+      { matchId: 5, role: "carry", isVictory: true },
+      { matchId: 6, role: "carry", isVictory: true },
     ];
     const result = findMatchesWithinRange({ matches, conditions });
-
+    console.log(result);
     expect(result.carryVictoryChallenge.length).toBe(4);
   });
 
   test("Matches from first 5 at zero index", () => {
     const matches = [
-      { role: "carry", isVictory: true },
-      { role: "middle", isVictory: false },
-      { role: "carry", isVictory: true },
-      { role: "middle", isVictory: false },
-      { role: "carry", isVictory: true },
-      { role: "middle", isVictory: false },
+      { role: "carry", isVictory: true, matchId: "m1" },
+      { role: "middle", isVictory: false, matchId: "m2" },
+      { role: "carry", isVictory: true, matchId: "m3" },
+      { role: "middle", isVictory: false, matchId: "m4" },
+      { role: "carry", isVictory: true, matchId: "m5" },
+      { role: "middle", isVictory: false, matchId: "m6" },
     ];
     const result = findMatchesWithinRange({
       matches,
@@ -77,9 +77,9 @@ describe("findMatchesWithinRange function", () => {
       { role: "middle", isVictory: false },
       { role: "carry", isVictory: false },
       { role: "middle", isVictory: false },
-      { role: "carry", isVictory: true },
+      { role: "carry", isVictory: true, matchId: 1 },
       { role: "middle", isVictory: false },
-      { role: "carry", isVictory: true },
+      { role: "carry", isVictory: true, matchId: 2 },
     ];
 
     const innerConditions = [

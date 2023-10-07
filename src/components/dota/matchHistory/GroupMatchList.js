@@ -5,30 +5,29 @@ export default function GroupMatchList({ groupMatches, activeChallenges }) {
     <div className="text-center mt-10">
       <h1 className="text-4xl">Set History</h1>
       {groupMatches?.map((grouping) => {
-        console.log("new group");
-
         const currentMatches = [...grouping?.matches];
         const successMatches = {};
-        console.log(currentMatches);
         const conditions = grouping.conditions;
-        console.log(conditions);
-        const buildSuccessChallenges = Object.keys(conditions).map(
-          (condition) => {
+        const buildSuccessChallenges = Object.keys(conditions)
+          .map((condition) => {
             if (conditions[condition].length) {
-              conditions[condition][0].forEach((matchIndex) => {
-                console.log(matchIndex);
-                const matchId = currentMatches[matchIndex].id;
-                successMatches[matchId] = condition;
+              conditions[condition].forEach((grouping) => {
+                grouping.forEach((matchId) => {
+                  if (successMatches.hasOwnProperty(matchId)) {
+                    successMatches[matchId].push(condition);
+                  } else {
+                    successMatches[matchId] = [condition];
+                  }
+                });
               });
-              return conditions[condition];
+              return activeChallenges.find(
+                (challenge) => challenge.challenge_id === parseInt(condition)
+              );
             }
             return null;
-          }
-        );
-        console.log(successMatches);
-        console.log("success");
-        console.log(currentMatches);
-        console.log(buildSuccessChallenges);
+          })
+          .filter((valid) => valid);
+
         return (
           <div
             className="flex gap-2 my-3 bg-neutral-800"
@@ -65,8 +64,19 @@ export default function GroupMatchList({ groupMatches, activeChallenges }) {
                 );
               })}
             </div>
-            <div className="bg-neutral-700 w-full border-l-white border-l-4">
-              Show awards and stuff here
+            <div className="bg-neutral-700 w-full border-l-white border-l-4 flex ">
+              <div className=" justify-center self-center w-full">
+                {buildSuccessChallenges.map((successChallenge) => {
+                  return (
+                    <p className="text-green-500">
+                      <span className="font-bold">
+                        {successChallenge.challenges.name}
+                      </span>{" "}
+                      Success!
+                    </p>
+                  );
+                })}
+              </div>
             </div>
           </div>
         );

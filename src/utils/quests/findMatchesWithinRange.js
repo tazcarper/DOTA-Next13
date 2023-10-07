@@ -23,7 +23,7 @@ export function findMatchesWithinRange({ matches, conditions }) {
           currIdx++
         ) {
           if (condition([matches[currIdx]])) {
-            qualifyingMatches.push(currIdx);
+            qualifyingMatches.push(matches[currIdx].matchId); // changed this line
           }
         }
 
