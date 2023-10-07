@@ -1,22 +1,33 @@
 import Image from "next/image";
 import generateHeroPortrait from "@/components/shared/HeroPortrait";
-export default function GroupMatchList({ groupMatches }) {
+export default function GroupMatchList({ groupMatches, activeChallenges }) {
   return (
     <div className="text-center mt-10">
       <h1 className="text-4xl">Set History</h1>
       {groupMatches?.map((grouping) => {
         console.log("new group");
-        const currentMatches = grouping?.matches;
+
+        const currentMatches = [...grouping?.matches];
+        const successMatches = {};
+        console.log(currentMatches);
         const conditions = grouping.conditions;
         console.log(conditions);
         const buildSuccessChallenges = Object.keys(conditions).map(
           (condition) => {
             if (conditions[condition].length) {
+              conditions[condition][0].forEach((matchIndex) => {
+                console.log(matchIndex);
+                const matchId = currentMatches[matchIndex].id;
+                successMatches[matchId] = condition;
+              });
               return conditions[condition];
             }
+            return null;
           }
         );
+        console.log(successMatches);
         console.log("success");
+        console.log(currentMatches);
         console.log(buildSuccessChallenges);
         return (
           <div

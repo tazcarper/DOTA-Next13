@@ -1,34 +1,43 @@
-export function findMatchesWithinRange({matches, conditions, maxRange = 5, qualifyCount}) {
+export function findMatchesWithinRange({ matches, conditions }) {
   const result = {};
 
-  conditions.forEach(({ condition, challenge_id }) => {
-    result[challenge_id] = [];
+  conditions.forEach(
+    ({ condition, challenge_id, streakLength, streakRange }) => {
+      result[challenge_id] = [];
 
-    // Create a set to store strings representing each array of indices
-    const indicesSet = new Set();
+      for (
+        let startIdx = 0;
+        startIdx <= matches.length - streakLength;
+        startIdx++
+      ) {
+        let qualifyingMatches = [];
+        let endIdx = startIdx + streakRange - 1;
 
-    for (let range = qualifyCount; range <= maxRange; range++) {
-      for (let i = 0; i <= matches.length - range; i++) {
-        const indices = [];
-        for (let j = i; j < i + range && indices.length < qualifyCount; j++) {
-          if (condition(matches[j])) {
-            indices.push(j);
+        if (endIdx >= matches.length) {
+          endIdx = matches.length - 1;
+        }
+
+        for (
+          let currIdx = startIdx;
+          currIdx <= endIdx && qualifyingMatches.length < streakLength;
+          currIdx++
+        ) {
+          if (condition([matches[currIdx]])) {
+            qualifyingMatches.push(currIdx);
           }
         }
-        if (indices.length === qualifyCount) {
-          // Convert the indices array to a string
-          const indicesString = indices.join(',');
 
-          // Check if this string is already in the indicesSet
-          if (!indicesSet.has(indicesString)) {
-            // If not, add the string to the indicesSet and the array to the result[challenge_id] array
-            indicesSet.add(indicesString);
-            result[challenge_id].push(indices);
-          }
+        if (
+          qualifyingMatches.length === streakLength &&
+          !result[challenge_id].some(
+            (arr) => JSON.stringify(arr) === JSON.stringify(qualifyingMatches)
+          )
+        ) {
+          result[challenge_id].push(qualifyingMatches);
         }
       }
     }
-  });
+  );
 
   return result;
 }

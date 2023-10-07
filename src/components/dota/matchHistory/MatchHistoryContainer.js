@@ -49,7 +49,6 @@ export default async function MatchHistoryContainer() {
     }
   });
 
-  console.log(challengeConditionGroups);
   let conditionObj = {};
 
   const groupMatches = generateMatchGroups(matchList);
@@ -65,12 +64,12 @@ export default async function MatchHistoryContainer() {
     // update this to get the range and qualifying matches from conditions
     const nonSequentialConditions = findMatchesWithinRange({
       matches,
-      conditions: challengeConditionGroups.sequential,
+      conditions: challengeConditionGroups.nonSequential,
     });
 
     return {
       matches: [...group],
-      conditions: { ...sequentialConditions },
+      conditions: { ...sequentialConditions, ...nonSequentialConditions },
     };
   });
 
@@ -82,7 +81,10 @@ export default async function MatchHistoryContainer() {
   results.shift();
   return (
     <>
-      <GroupMatchList groupMatches={results} />
+      <GroupMatchList
+        groupMatches={results}
+        activeChallenges={activeChallenges}
+      />
     </>
   );
 }
