@@ -5,10 +5,12 @@ import { getSteamBaseData } from "@/utils/steamConvert";
 import addMediaToChallenge from "@/data/supabase/helpers/addMediaToChallenge";
 import getRandomPendingChallenges from "@/data/supabase/getRandomPendingChallenges";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { options } from "@/auth/options";
+import { cookies } from "next/headers";
+
 import insertPendingChallenges from "@/data/supabase/insertPendingChallenges";
 import { getServerSession } from "next-auth/next";
-import { cookies } from "next/headers";
+import { options } from "@/auth/options";
+
 import getUserChallenges from "@/data/supabase/getUserChallenges";
 
 export default async function ChallengeSelectorContainer() {
@@ -39,9 +41,12 @@ export default async function ChallengeSelectorContainer() {
   }
 
   const updatedPendingChallenges = await addMediaToChallenge({
-    challengeData: pendingChallenges.map((challenge) => challenge.challenges),
+    challengeData: pendingChallenges,
     supabase,
   });
+
+  console.log("pending");
+  console.log(updatedPendingChallenges);
 
   return (
     <div className="challengeWrapper mt-10">

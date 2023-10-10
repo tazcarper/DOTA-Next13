@@ -55,7 +55,7 @@ export default async function MatchHistoryContainer() {
 
   const results = groupMatches.map((group) => {
     let matches = group.map((match) => match.players[0]);
-    console.log(matches);
+
     const sequentialConditions = findSequentialMatches(
       matches,
       challengeConditionGroups.sequential
@@ -66,8 +66,6 @@ export default async function MatchHistoryContainer() {
       matches,
       conditions: challengeConditionGroups.nonSequential,
     });
-
-    console.log(nonSequentialConditions["13"]);
 
     return {
       matches: [...group],

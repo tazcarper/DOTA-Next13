@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import addMediaToChallenge from "@/data/supabase/helpers/addMediaToChallenge";
 
 export default async function getUserChallenges({ userId, supabase = false }) {
   // default to server component supabase
@@ -22,8 +23,13 @@ export default async function getUserChallenges({ userId, supabase = false }) {
   let failedChallenges = [];
   let userChallenges = [];
 
-  userChallengesData.forEach((challenge) => {
-    userChallenges.push(challenge.challenges);
+  let updatedUserData = await addMediaToChallenge({
+    challengeData: userChallengesData.map((challenge) => challenge),
+    supabase,
+  });
+
+  updatedUserData.forEach(async (challenge) => {
+    userChallenges.push(challenge);
 
     if (challenge.pending) {
       pendingChallenges.push(challenge);

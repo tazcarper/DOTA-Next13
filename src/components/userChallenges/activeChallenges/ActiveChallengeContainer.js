@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import ChallengeCard from "@/components/userChallenges/ChallengeCard";
 import addMediaToChallenge from "@/data/supabase/helpers/addMediaToChallenge";
 import ResetButton from "@/components/userChallenges/ResetButton";
+import ActiveChallengeCards from "./ActiveChallengeCards";
 
 export default async function ActiveChallengeContainer() {
   const supabase = createServerComponentClient({ cookies });
@@ -22,11 +23,13 @@ export default async function ActiveChallengeContainer() {
   if (userChallengesError) {
     return <div>Get current challenges error</div>;
   }
+  console.log("ACTIVE CHECk");
+  console.log(activeChallenges);
 
   // Add start time
-  activeChallenges = activeChallenges.map((challenge) => {
-    return { ...challenge.challenges, start_time: challenge.start_time };
-  });
+  // activeChallenges = activeChallenges.map((challenge) => {
+  //   return { ...challenge.challenges, start_time: challenge.start_time };
+  // });
 
   activeChallenges = await addMediaToChallenge({
     challengeData: activeChallenges,
@@ -44,13 +47,7 @@ export default async function ActiveChallengeContainer() {
           </p>
         )}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full pt-5">
-          {activeChallenges?.map((challenge) => {
-            return (
-              <div key={challenge.challenge_id}>
-                <ChallengeCard challenge={challenge} active={true} />
-              </div>
-            );
-          })}
+          <ActiveChallengeCards activeChallenges={activeChallenges} />
         </div>
       </div>
     </div>
