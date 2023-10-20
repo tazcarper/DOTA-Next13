@@ -29,9 +29,6 @@ export default async function MatchHistoryContainer() {
     userId,
     supabase,
   });
-  // console.log("success", successChallenges);
-  // console.log(activeChallenges);
-  // Build the conditions list
 
   const challengeConditionGroups = {
     sequential: [],

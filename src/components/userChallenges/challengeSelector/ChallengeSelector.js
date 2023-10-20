@@ -39,13 +39,13 @@ export default function ChallengeSelector({
       payload: challengeToAdd,
     });
 
-    // const pendingChallengeRequest = await fetch(
-    //   `api/supabase/selectChallenge?userid=${userId}&challenge_id=${challengeId}`
-    // );
-    // const result = await pendingChallengeRequest.json();
-    // if (result) {
-    //   await shuffleChallenges();
-    // }
+    const pendingChallengeRequest = await fetch(
+      `api/supabase/selectChallenge?userid=${userId}&challenge_id=${challengeId}`
+    );
+    const result = await pendingChallengeRequest.json();
+    if (result) {
+      await shuffleChallenges();
+    }
   };
 
   const shuffleChallenges = async () => {
@@ -63,7 +63,7 @@ export default function ChallengeSelector({
 
     setAvailableChallenges(updatedPendingChallenges);
     // Maybe not needed?
-    router.refresh();
+    // router.refresh();
   };
   return (
     <div className="w-full">

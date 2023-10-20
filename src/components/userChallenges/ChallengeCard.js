@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function ChallengeCard({
   challenge,
   key,
-  onClick = false,
+  onClick = null,
   active = false,
 }) {
   const challengesData = challenge?.challenges;

@@ -8,9 +8,6 @@ export default function ActiveChallengeCards({}) {
   const { state, dispatch } = useContext(ChallengeProviderContext);
   console.log(state);
   const { userChallenges, activeChallenges } = state || [];
-  console.log("THIS");
-  console.log(userChallenges);
-  console.log(activeChallenges);
 
   return (
     <>
