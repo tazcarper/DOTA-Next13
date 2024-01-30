@@ -3,6 +3,7 @@ import MatchHistoryContainer from "@/components/dota/matchHistory/MatchHistoryCo
 import ChallengeSelectorContainer from "@/components/userChallenges/challengeSelector/ChallengeSelectorContainer";
 import Loading from "@/components/shared/Loading";
 import ActiveChallengeContainer from "@/components/userChallenges/activeChallenges/ActiveChallengeContainer";
+import ChallengeContainer from "@/components/userChallenges/ChallengeContainer";
 
 import getPlayerData from "@/queries/recipes/getPlayerData";
 import initiateUser from "@/data/supabase/helpers/initiateUser";
@@ -58,12 +59,14 @@ export default async function Dota(props) {
           <MatchHistoryContainer />
         </div>
         <div className="w-1/2">
+          <ChallengeContainer>
           <Suspense fallback={<Loading />}>
             <ActiveChallengeContainer />
           </Suspense>
           <Suspense fallback={<Loading />}>
             <ChallengeSelectorContainer />
           </Suspense>
+          </ChallengeContainer>
         </div>
       </div>
     </div>

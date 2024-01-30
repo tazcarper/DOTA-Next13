@@ -1,32 +1,90 @@
 import { findSequentialMatches } from "../src/utils/quests/findSequentialMatches";
+import {
+  simpleKillChallenge,
+  goldMiner,
+} from "../src/utils/quests/questConditions";
 
 describe("findSequentialMatches  function", () => {
-  const conditions = {
-    streak_carry_3: {
-      condition: (match) => match.role === "carry" && match.isVictory,
-      streakLength: 3,
+  const challenge1 = 3;
+  const challenge2 = 6;
+  const conditions = [
+    {
+      ...simpleKillChallenge,
+      challenge_id: challenge1,
     },
-    streak_mid_5: {
-      condition: (match) => match.role === "middle" && match.isVictory,
-      streakLength: 5,
+    {
+      ...goldMiner,
+      challenge_id: challenge2,
     },
-  };
+  ];
 
-  test("Carry 3 game streak to be 0. 5 mid wins in a row to be -1", () => {
+  test("Two conditions both pass", () => {
     const matches = [
-      { role: "carry", isVictory: true },
-      { role: "carry", isVictory: true },
-      { role: "carry", isVictory: true },
-      { role: "middle", isVictory: false },
-      { role: "carry", isVictory: true },
-      { role: "carry", isVictory: true },
+      {
+        hero: { id: 101 },
+        role: "carry",
+        isVictory: true,
+        kills: 7,
+        goldPerMinute: 5,
+      },
+      {
+        hero: { id: 102 },
+        role: "carry",
+        isVictory: true,
+        kills: 7,
+        goldPerMinute: 666,
+      },
+      {
+        hero: { id: 103 },
+        role: "carry",
+        isVictory: true,
+        kills: 7,
+        goldPerMinute: 666,
+      },
+      {
+        hero: { id: 104 },
+        role: "middle",
+        isVictory: false,
+        kills: 0,
+        goldPerMinute: 666,
+      },
+      {
+        hero: { id: 105 },
+        role: "carry",
+        isVictory: false,
+        kills: 7,
+        goldPerMinute: 666,
+      },
+      {
+        hero: { id: 106 },
+        role: "carry",
+        isVictory: true,
+        kills: 7,
+        goldPerMinute: 666,
+      },
+      {
+        hero: { id: 107 },
+        role: "carry",
+        isVictory: true,
+        kills: 7,
+        goldPerMinute: 666,
+      },
+      {
+        hero: { id: 108 },
+        role: "carry",
+        isVictory: true,
+        kills: 7,
+        goldPerMinute: 666,
+      },
     ];
-    expect(
-      findSequentialMatches(matches, conditions).streak_carry_3.startIndex
-    ).toBe(0);
-    expect(
-      findSequentialMatches(matches, conditions).streak_mid_5.startIndex
-    ).toBe(-1);
+
+    const result = findSequentialMatches(matches, conditions);
+
+    expect(result[challenge1].length).toBe(4);
+    expect(result[challenge1][0].length).toBe(2);
+
+    expect(result[challenge2].length).toBe(1);
+    expect(result[challenge2][0].length).toBe(3);
   });
 
   test("No matches", () => {
@@ -38,15 +96,13 @@ describe("findSequentialMatches  function", () => {
       { role: "carry", isVictory: true },
       { role: "middle", isVictory: false },
     ];
-    expect(
-      findSequentialMatches(matches, conditions).streak_carry_3.startIndex
-    ).toBe(-1);
-    expect(
-      findSequentialMatches(matches, conditions).streak_mid_5.startIndex
-    ).toBe(-1);
+    const result = findSequentialMatches(matches, conditions);
+
+    expect(result[challenge1].length).toBe(0);
+    expect(result[challenge2].length).toBe(0);
   });
 
-  test("One passes towards the end. Gets furthest one down the list", () => {
+  test("One passes and one fails.", () => {
     const matches = [
       { role: "middle", isVictory: false },
       { role: "carry", isVictory: true },
@@ -56,36 +112,14 @@ describe("findSequentialMatches  function", () => {
       { role: "carry", isVictory: true },
       { role: "middle", isVictory: false },
       { role: "carry", isVictory: true },
-      { role: "carry", isVictory: true },
-      { role: "carry", isVictory: true },
+      { role: "carry", isVictory: true, kills: 7 },
+      { role: "carry", isVictory: true, kills: 7 },
     ];
-    expect(
-      findSequentialMatches(matches, conditions).streak_carry_3.startIndex
-    ).toBe(7);
-    expect(
-      findSequentialMatches(matches, conditions).streak_mid_5.startIndex
-    ).toBe(-1);
-  });
+    const result = findSequentialMatches(matches, conditions);
 
-  test("Both pass", () => {
-    const matches = [
-      { role: "middle", isVictory: false },
-      { role: "carry", isVictory: true },
-      { role: "middle", isVictory: false },
-      { role: "carry", isVictory: true },
-      { role: "carry", isVictory: true },
-      { role: "carry", isVictory: true },
-      { role: "middle", isVictory: true },
-      { role: "middle", isVictory: true },
-      { role: "middle", isVictory: true },
-      { role: "middle", isVictory: true },
-      { role: "middle", isVictory: true },
-    ];
-    expect(
-      findSequentialMatches(matches, conditions).streak_carry_3.startIndex
-    ).toBe(3);
-    expect(
-      findSequentialMatches(matches, conditions).streak_mid_5.startIndex
-    ).toBe(6);
+    expect(result[challenge1].length).toBe(1);
+    expect(result[challenge1][0].length).toBe(2);
+
+    expect(result[challenge2].length).toBe(0);
   });
 });

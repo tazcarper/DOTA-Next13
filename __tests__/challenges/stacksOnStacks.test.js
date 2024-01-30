@@ -2,9 +2,13 @@ import { findSequentialMatches } from "../../src/utils/quests/findSequentialMatc
 import { stacksOnStacks } from "../../src/utils/quests/questConditions";
 
 describe("Stacks on Stacks Condition Test", () => {
-  const conditions = {
-    stacksOnStacks,
-  };
+  const challenge_id = 1;
+  const conditions = [
+    {
+      challenge_id,
+      ...stacksOnStacks,
+    },
+  ];
 
   const successRunes = [
     { rune: "BOUNTY" },
@@ -46,8 +50,8 @@ describe("Stacks on Stacks Condition Test", () => {
 
     const result = findSequentialMatches(successArray, conditions);
 
-    expect(result.stacksOnStacks.startIndex).toBe(0);
-    expect(result.stacksOnStacks.streakLength).toBe(5);
+    expect(result[challenge_id].length).toBe(1);
+    expect(result[challenge_id][0].length).toBe(5);
   });
 
   test("Should pass even with big list of fails", () => {
@@ -64,8 +68,8 @@ describe("Stacks on Stacks Condition Test", () => {
 
     const result = findSequentialMatches(bigList, conditions);
 
-    expect(result.stacksOnStacks.startIndex).toBe(20);
-    expect(result.stacksOnStacks.streakLength).toBe(5);
+    expect(result[challenge_id].length).toBe(1);
+    expect(result[challenge_id][0].length).toBe(5);
   });
 
   test("Should fail if one match has 4 stacks", () => {
@@ -88,8 +92,7 @@ describe("Stacks on Stacks Condition Test", () => {
 
     const result = findSequentialMatches(matchesWithFailCondition, conditions);
 
-    expect(result.stacksOnStacks.startIndex).toBe(-1);
-    expect(result.stacksOnStacks.streakLength).toBe(0);
+    expect(result[challenge_id].length).toBe(0);
   });
 
   test("Should fail if not getting bounties", () => {
@@ -112,7 +115,6 @@ describe("Stacks on Stacks Condition Test", () => {
 
     const result = findSequentialMatches(matchesWithFailCondition, conditions);
 
-    expect(result.stacksOnStacks.startIndex).toBe(-1);
-    expect(result.stacksOnStacks.streakLength).toBe(0);
+    expect(result[challenge_id].length).toBe(0);
   });
 });

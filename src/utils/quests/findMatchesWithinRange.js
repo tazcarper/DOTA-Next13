@@ -1,44 +1,43 @@
-/**
- * Finds matches within a given range that satisfy certain conditions.
- * @param {Array} matches - Array of match data.
- * @param {Object} conditions - An object containing various match conditions to check.
- * @param {number} windowSize - The range within which we are checking the condition (defaults to 5).
- * @returns {Object} An object containing the result for each condition in conditions.
- */
-export function findMatchesWithinRange(matches, conditions, windowSize = 5) {
-  const output = {};
+export function findMatchesWithinRange({ matches, conditions }) {
+  const result = {};
 
-  for (const [conditionName, conditionData] of Object.entries(conditions)) {
-    output[conditionName] = { results: [] };
+  conditions.forEach(
+    ({ condition, challenge_id, streakLength, streakRange }) => {
+      result[challenge_id] = [];
 
-    for (let i = 0; i < matches.length; i++) {
-      const result = [];
-      for (let j = i; j < matches.length && j < i + windowSize; j++) {
-        if (conditionData.condition(matches[j])) {
-          result.push(j);
-          if (result.length === conditionData.streakLength) {
-            output[conditionName].results.push([...result]);
-            break;
+      for (
+        let startIdx = 0;
+        startIdx <= matches.length - streakLength;
+        startIdx++
+      ) {
+        let qualifyingMatches = [];
+        let endIdx = startIdx + streakRange - 1;
+
+        if (endIdx >= matches.length) {
+          endIdx = matches.length - 1;
+        }
+
+        for (
+          let currIdx = startIdx;
+          currIdx <= endIdx && qualifyingMatches.length < streakLength;
+          currIdx++
+        ) {
+          if (condition([matches[currIdx]])) {
+            qualifyingMatches.push(matches[currIdx].matchId); // changed this line
           }
+        }
+
+        if (
+          qualifyingMatches.length === streakLength &&
+          !result[challenge_id].some(
+            (arr) => JSON.stringify(arr) === JSON.stringify(qualifyingMatches)
+          )
+        ) {
+          result[challenge_id].push(qualifyingMatches);
         }
       }
     }
+  );
 
-    // Remove overlapping results
-    output[conditionName].results = output[conditionName].results.reduce(
-      (unique, item) => {
-        const last = unique[unique.length - 1];
-        if (
-          !last ||
-          last[last.length - 1] !== item[conditionData.streakLength - 1]
-        ) {
-          unique.push(item);
-        }
-        return unique;
-      },
-      []
-    );
-  }
-
-  return output;
+  return result;
 }

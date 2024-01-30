@@ -2,12 +2,19 @@ import { findSequentialMatches } from "../../src/utils/quests/findSequentialMatc
 import { supportMastery } from "../../src/utils/quests/questConditions";
 
 describe("Support Mastery Condition Test", () => {
-  const conditions = {
-    supportMastery,
-  };
+
+  const challenge_id = 1;
+  
+  const conditions = [
+    {
+    ...supportMastery,
+    challenge_id
+    }
+  ];
 
   const matchThatPasses = {
     role: "LIGHT_SUPPORT",
+    id: 69,
     stats: {
       wards: [
         { type: 1 },
@@ -25,6 +32,7 @@ describe("Support Mastery Condition Test", () => {
     },
     assists: 11,
   };
+  
 
   const matchesWithFailCondition = {
     role: "LIGHT_SUPPORT",
@@ -68,8 +76,8 @@ describe("Support Mastery Condition Test", () => {
       conditions
     );
 
-    expect(result.supportMastery.startIndex).toBe(0);
-    expect(result.supportMastery.streakLength).toBe(5);
+    expect(result[challenge_id].length).toBe(1);
+    expect(result[challenge_id][0].length).toBe(5);
   });
 
   test("Should pass when first fails but 5 next ones succeed", () => {
@@ -86,8 +94,8 @@ describe("Support Mastery Condition Test", () => {
       conditions
     );
 
-    expect(result.supportMastery.startIndex).toBe(1);
-    expect(result.supportMastery.streakLength).toBe(5);
+    expect(result[challenge_id].length).toBe(1);
+    expect(result[challenge_id][0].length).toBe(5);
   });
 
   test("Should return a valid index, 0, for supportMastery condition", () => {
@@ -98,8 +106,8 @@ describe("Support Mastery Condition Test", () => {
       conditions
     );
 
-    expect(result.supportMastery.startIndex).toBe(0);
-    expect(result.supportMastery.streakLength).toBe(5);
+    expect(result[challenge_id].length).toBe(1);
+    
   });
 
   test("Should return a valid index at 4", () => {
@@ -116,8 +124,9 @@ describe("Support Mastery Condition Test", () => {
       conditions
     );
 
-    expect(result.supportMastery.startIndex).toBe(4);
-    expect(result.supportMastery.streakLength).toBe(5);
+    expect(result[challenge_id].length).toBe(1);
+    expect(result[challenge_id][0][0]).toBe(4);
+    expect(result[challenge_id][0][1]).toBe(5);
   });
 
   test("Should fail and return -1 if 5 matchds with 1 failed one", () => {
@@ -132,8 +141,7 @@ describe("Support Mastery Condition Test", () => {
       conditions
     );
 
-    expect(result.supportMastery.startIndex).toBe(-1);
-    expect(result.supportMastery.streakLength).toBe(0);
+    expect(result[challenge_id].length).toBe(0);
   });
 
   test("Should fail with 4 bad, 1 good, 4 bad", () => {
@@ -149,7 +157,6 @@ describe("Support Mastery Condition Test", () => {
       conditions
     );
 
-    expect(result.supportMastery.startIndex).toBe(-1);
-    expect(result.supportMastery.streakLength).toBe(0);
+    expect(result[challenge_id].length).toBe(0);
   });
 });
